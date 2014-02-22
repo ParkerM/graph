@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>I like balls</title>
+</head>
+<body>
+
+<div style="margin: 0 auto;">
+<canvas id="myCanvas" style="border:1px solid #c3c3c3;float:left;margin-right:20px;margin-bottom:15px">
+</canvas>
+</div>
+
+<script>
+var canvasWidth = 500;
+var canvasHeight = 500;
+var posTop = (window.innerHeight - canvasHeight) / 2;
+var posLeft = (window.innerWidth - canvasWidth) / 2;
+var axesOffset = 50;
+var pointSize = 4;
+//initialize arrays containing x and y values
+var coords = new Array();
+var showCoords = true;
+var showLines = true;
+
+var c=document.getElementById("myCanvas");
+var canvOK=1;
+try {c.getContext("2d");}
+catch (er) {canvOK=0;}
+if (canvOK==1) {
+	c.style.position = "fixed";
+	c.setAttribute("width", canvasWidth);
+	c.setAttribute("height", canvasHeight);
+	c.style.top = posTop + "px";
+	c.style.left = posLeft + "px";
+	
+	var ctx=c.getContext("2d");
+	ctx.fillStyle="#FFFFFF";
+	ctx.fillRect(0,0,500,500);	
+	drawAxes();	
+	plotPoint(350, 175);
+	plotPoint(25, 25);
+	plotPoint(160, 300);
+
+	coords.sort(compare);
+	drawLines();
+}
+
+
+function addPoint(x, y) {
+	coords.push([x, y]);
+}
+
+function compare(a, b) {
+	return a[0].localeCompare(b[1]);
+}
+
+function drawAxes(){
+	//draw axes
+	var ctx = c.getContext("2d");
+	ctx.beginPath();
+	ctx.moveTo(axesOffset, axesOffset);
+	ctx.lineTo(axesOffset, canvasHeight - axesOffset);
+	ctx.lineTo(canvasWidth - axesOffset, canvasHeight - axesOffset);
+	ctx.strokeStyle = "000000";
+	ctx.stroke();
+	
+	//draw interval markers
+	xInterval = (canvasWidth - (2 * axesOffset)) / 10;
+	yInterval = (canvasHeight - (2 * axesOffset)) / 10;
+	ctx.font = "12px Courier";
+	ctx.fillStyle = "000000";
+	
+	//x axis
+	for (var i = 1; i < 11; i++) {
+		ctx.beginPath();
+		ctx.moveTo(axesOffset + (i * xInterval), canvasHeight - axesOffset);
+		ctx.lineTo(axesOffset + (i * xInterval), canvasHeight - axesOffset - 5);
+		ctx.stroke();
+		ctx.textAlign = "center";
+		ctx.fillText((i * xInterval), axesOffset + (i * xInterval), canvasHeight - axesOffset + 12);
+	}
+	
+	//y axis
+	for (var i = 1; i < 11; i++) {
+		ctx.beginPath();
+		ctx.moveTo(axesOffset, canvasHeight - axesOffset - (i * yInterval));
+		ctx.lineTo(axesOffset + 5, canvasHeight - axesOffset - (i * yInterval));
+		ctx.stroke();
+		ctx.textAlign = "right";
+		ctx.fillText((i * yInterval), axesOffset - 4, canvasHeight - axesOffset - (i * yInterval) + 3);
+	}
+}	
+
+function drawLines() {
+	if (showLines) {
+		var ctx = c.getContext("2d");
+		ctx.strokeStyle("000000");
+		ctx.beginPath();
+		ctx.moveTo(coords[0][0], coords[0][1]);
+		for (var i = 1; i < coords.length; i++){
+			ctx.lineTo(coords[i][0], coords[i][1]);
+		}
+		ctx.stroke();
+	}
+}	
+
+function plotPoint(x, y) {
+	//draw point
+	var ctx = c.getContext("2d");
+	var xPos = x + axesOffset;
+	var yPos = (canvasHeight - axesOffset) - y;
+	ctx.fillStyle = "000000";
+	ctx.fillRect(xPos - pointSize/2, yPos - pointSize/2, pointSize, pointSize);
+	
+	//add point to array
+	addPoint(xPos, yPos);
+	
+	//print coordinates
+	if (showCoords) {
+		ctx.font = "12px Courier";
+		ctx.textAlign = "left";
+		ctx.fillText("(" + x + ", " + y + ")", xPos + pointSize/2, yPos + pointSize/2);
+	}
+}
+	
+</script>
+<br>
+
+</body>
+</html>
