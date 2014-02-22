@@ -41,7 +41,6 @@ if (canvOK==1) {
 	plotPoint(25, 25);
 	plotPoint(160, 300);
 
-	coords.sort(compare);
 	drawLines();
 }
 
@@ -51,7 +50,7 @@ function addPoint(x, y) {
 }
 
 function compare(a, b) {
-	return a[0].localeCompare(b[1]);
+	return a[0] - b[0];
 }
 
 function drawAxes(){
@@ -91,10 +90,12 @@ function drawAxes(){
 	}
 }	
 
+//draw a line connecting each plotted point
 function drawLines() {
-	if (showLines) {
+	if (showLines) {	
+		coords.sort(compare);	//sort the array by ascending x values
 		var ctx = c.getContext("2d");
-		ctx.strokeStyle("000000");
+		ctx.strokeStyle = "000000";
 		ctx.beginPath();
 		ctx.moveTo(coords[0][0], coords[0][1]);
 		for (var i = 1; i < coords.length; i++){
@@ -104,6 +105,7 @@ function drawLines() {
 	}
 }	
 
+//draw a point and record its location in the coords array
 function plotPoint(x, y) {
 	//draw point
 	var ctx = c.getContext("2d");
