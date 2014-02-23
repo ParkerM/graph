@@ -6,9 +6,22 @@
 <body>
 
 <div style="margin: 0 auto;">
-<canvas id="myCanvas" style="float:left;margin-right:20px;margin-bottom:15px">
-</canvas>
+<canvas id="myCanvas" style="float:left;margin-right:20px;margin-bottom:15px"></canvas>
 </div>
+
+<form name = "coordInput">
+X Coordinate: <input type = "text" name = "xCoord" size = 5 autofocus><br>
+Y Coordinate: <input type = "text" name = "yCoord" size = 5><br>
+<button type = "button" form = "coordInput">Add Coordinate</button>
+<br><br><br>
+X Axis Length: <input type = "text" name = "xAxisLength" size = 5><br>
+Y Axis Length: <input type = "text" name = "yAxisLength" size = 5><br>
+<button type = "button" form = "coordInput">Set Axis Length</button>
+<br><br><br>
+<input type = "checkbox" name = "option" value = "border" checked>Show Border<br>
+<input type = "checkbox" name = "option" value = "coordinates" checked>Show Coordinates<br>
+<input type = "checkbox" name = "option" value = "lines" checked>Show Lines<br>
+</form>
 
 <script>
 //define some global variables
@@ -28,6 +41,7 @@ var coords = new Array();
 var c = document.getElementById("myCanvas");
 var canvOK = 1;
 
+//main
 try {c.getContext("2d");}
 catch (er) {canvOK=0;}
 if (canvOK==1) {
@@ -42,6 +56,12 @@ if (canvOK==1) {
 	ctx.fillStyle="#FFFFFF";
 	ctx.fillRect(0,0,500,500);	
 	
+	var inputCoord = "(0, 0)";
+//	while (inputCoord != null) {
+//		inputCoord = prompt("Enter a coordinate. Press cancel when finished.", "(x, y)");
+//		parseCoord(inputCoord);
+//	}
+	
 	plotPoint(350, 175);
 	plotPoint(75, 50);
 	plotPoint(25, 25);
@@ -54,13 +74,15 @@ if (canvOK==1) {
 	drawLines();
 	drawBorder();
 	
-	exportToPNG();
+	//exportToPNG();
 }
 
+//comparator for sorting coordinates
 function compare(a, b) {
 	return a[0] - b[0];
 }
 
+//draw the x and y axes
 function drawAxes() {
 	//draw axes
 	var ctx = c.getContext("2d");
@@ -77,7 +99,7 @@ function drawAxes() {
 	ctx.font = "12px Courier";
 	ctx.fillStyle = "000000";
 	
-	//x axis
+	//x axis interval markers
 	for (var i = 1; i < 11; i++) {
 		ctx.beginPath();
 		ctx.moveTo(axesOffset + (i * xInterval), canvasHeight - axesOffset);
@@ -87,7 +109,7 @@ function drawAxes() {
 		ctx.fillText((i * xInterval), axesOffset + (i * xInterval), canvasHeight - axesOffset + 12);
 	}
 	
-	//y axis
+	//y axis interval markers
 	for (var i = 1; i < 11; i++) {
 		ctx.beginPath();
 		ctx.moveTo(axesOffset, canvasHeight - axesOffset - (i * yInterval));
@@ -150,6 +172,28 @@ function exportToPNG() {
 	var img = c.toDataURL("image/png");
 	window.open(img);
 	//document.write('<img src = "' + img + '"/>');
+}
+
+//parse coordinates from a string
+function parseCoord(inputString) {
+	var x, y;
+	var counter = 1;
+	var oldCounter = counter;
+	while (inputString.charAt(counter) != ",") {
+		counter++;
+	}
+	x = inputString.substring(oldCounter, counter);
+	oldCounter = counter++;
+	if (inputString.charAt(counter) == " ") {
+		counter++;
+		oldCounter++;
+	}
+	while (inputString.charAt(counter) != ")") {
+		counter++;
+	}
+	y = inputString.substring(oldCounter, counter);
+	
+	plotPoint(x, y);
 }
 
 //draw a point and record its location in the coords array
