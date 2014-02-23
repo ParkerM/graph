@@ -12,7 +12,7 @@
 <form name = "coordInput">
 X Coordinate: <input type = "text" id = "xCoord" size = 5 autofocus><br>
 Y Coordinate: <input type = "text" id = "yCoord" size = 5><br>
-<button type = "button" form = "coordInput" onclick = "plotPointFromInput()">Add Coordinate</button>
+<button type = "button" form = "coordInput" onclick = "addPointFromInput()">Add Coordinate</button>
 <br><br>
 X Axis Length: <input type = "text" id = "xAxisLength" size = 5><br>
 Y Axis Length: <input type = "text" id = "yAxisLength" size = 5><br>
@@ -43,6 +43,14 @@ var c = document.getElementById("myCanvas");
 var canvOK = 1;
 
 //main
+//add some test points
+addPoint(350, 175);
+addPoint(75, 50);
+addPoint(25, 25);
+addPoint(160, 300);
+addPoint(400, 25);
+addPoint(250, 250);
+
 paintCanvas();
 
 //draws everything to canvas
@@ -65,18 +73,11 @@ function paintCanvas() {
 		var ctx=c.getContext("2d");
 		ctx.fillStyle="#FFFFFF";
 		ctx.fillRect(0, 0, canvasWidth, canvasHeight);	
-		
-		
-		//plot some test points
-		plotPoint(350, 175);
-		plotPoint(75, 50);
-		plotPoint(25, 25);
-		plotPoint(160, 300);
-		plotPoint(400, 25);
-		plotPoint(250, 250);
+
+		replot();
 		
 		//draw graph elements
-		if (showBorder) {drawBorder()};
+		drawBorder();
 		drawAxes();	
 		drawLabels();
 		drawLines();
@@ -202,38 +203,22 @@ function parseCoord(inputString) {
 	plotPoint(x, y);
 }
 
-//draw a point and record its location in the coords array
-function plotPoint(x, y) {
-	//draw point
-	var ctx = c.getContext("2d");
+//record a points location in the coords array
+function addPoint(x, y) {
 	var xPos = x + axesOffset;
 	var yPos = (canvasHeight - axesOffset) - y;
 		
 	//add point to array
 	coords.push([xPos, yPos]);
 	
-	//draw point
-	ctx.fillStyle = "000000";
-	ctx.fillRect(xPos - pointSize/2, yPos - pointSize/2, pointSize, pointSize);
-	
-	//print coordinates
-	if (showCoords) {
-		ctx.font = "12px Courier";
-		ctx.textAlign = "left";
-		ctx.fillText("(" + x + ", " + y + ")", xPos + pointSize/2, yPos + pointSize/2);
-	}
-		alert(coords.length);
-
+	paintCanvas();
 }
 	
 //plot point from form input
-function plotPointFromInput() {
+function addPointFromInput() {
 	var x = parseFloat(document.getElementById("xCoord").value);
 	var y = parseFloat(document.getElementById("yCoord").value);
-
-	plotPoint(x, y);
-	//paintCanvas();
-	//replot();
+	addPoint(x, y);
 }	
 
 //redraw all points
@@ -242,12 +227,17 @@ function replot() {
 	ctx.fillStyle = "000000";
 	ctx.font = "12px Courier";
 	ctx.textAlign = "left";
-
+	
+	var xPos;
+	var yPos;
+	
 	//draw points
 	for (var i = 0; i < coords.length; i++) {
 		ctx.fillRect(coords[i][0] - pointSize/2, coords[i][1] - pointSize/2, pointSize, pointSize);
 		if (showCoords) {
-			ctx.fillText("(" + x + ", " + y + ")", coords[i][0] + pointSize/2, coords[i][1] + pointSize/2);
+			xPos = coords[i][0] - axesOffset;
+			yPos = canvasHeight - axesOffset - coords[i][1];
+			ctx.fillText("(" + xPos + ", " + yPos + ")", coords[i][0] + pointSize/2, coords[i][1] + pointSize/2);
 		}
 	}
 }
