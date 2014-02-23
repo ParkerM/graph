@@ -10,13 +10,25 @@
 </div>
 
 <form name = "coordInput">
-X Coordinate: <input type = "text" id = "xCoord" size = 5 autofocus><br>
-Y Coordinate: <input type = "text" id = "yCoord" size = 5><br>
-<button type = "button" form = "coordInput" onclick = "addPointFromInput()">Add Coordinate</button>
+X Coordinate: <input type = "text" id = "xCoord" size = 5 
+			   onkeydown="if (event.keyCode == 13) document.getElementById('addCoordButton').click()" 
+			   autofocus><br>
+Y Coordinate: <input type = "text" id = "yCoord" size = 5
+			   onkeydown="if (event.keyCode == 13) document.getElementById('addCoordButton').click()"><br>
+<button type = "button" id = "addCoordButton" form = "coordInput" 
+		onclick = "addPointFromInput(); 
+		document.getElementById('xCoord').value = '';
+		document.getElementById('yCoord').value = '';
+		document.getElementById('xCoord').focus()">Add Coordinate</button>
 <br><br>
-X Axis Length: <input type = "text" id = "xAxisLength" size = 5><br>
-Y Axis Length: <input type = "text" id = "yAxisLength" size = 5><br>
-<button type = "button" form = "coordInput">Set Axis Length</button>
+X Axis Length: <input type = "text" id = "xAxisLength" size = 5 
+				onkeydown="if (event.keyCode == 13) document.getElementById('setAxisButton').click()"><br>
+Y Axis Length: <input type = "text" id = "yAxisLength" size = 5 
+				onkeydown="if (event.keyCode == 13) document.getElementById('setAxisButton').click()"><br>
+<button type = "button" id = "setAxisButton" form = "coordInput" onclick = "redrawAxes();
+		document.getElementById('xAxisLength').value = '';
+		document.getElementById('yAxisLength').value = '';
+		document.getElementById('xAxisLength').focus()">Set Axis Length</button>
 <br><br>
 <input type = "checkbox" name = "option" value = "border" checked>Show Border<br>
 <input type = "checkbox" name = "option" value = "coordinates" checked>Show Coordinates<br>
@@ -240,6 +252,11 @@ function replot() {
 			ctx.fillText("(" + xPos + ", " + yPos + ")", coords[i][0] + pointSize/2, coords[i][1] + pointSize/2);
 		}
 	}
+}
+
+//redraw axes
+function redrawAxes() {
+
 }
 </script>
 </body>
