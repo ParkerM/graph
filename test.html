@@ -11,10 +11,10 @@
 
 <form name = "coordInput">
 X Coordinate: <input type = "text" id = "xCoord" size = 5 
-			   onkeydown="if (event.keyCode == 13) document.getElementById('addCoordButton').click()" 
+			   onkeydown = "if (event.keyCode == 13) document.getElementById('addCoordButton').click()" 
 			   autofocus><br>
 Y Coordinate: <input type = "text" id = "yCoord" size = 5
-			   onkeydown="if (event.keyCode == 13) document.getElementById('addCoordButton').click()"><br>
+			   onkeydown = "if (event.keyCode == 13) document.getElementById('addCoordButton').click()"><br>
 <button type = "button" id = "addCoordButton" form = "coordInput" 
 		onclick = "addPointFromInput(); 
 		document.getElementById('xCoord').value = '';
@@ -22,18 +22,23 @@ Y Coordinate: <input type = "text" id = "yCoord" size = 5
 		document.getElementById('xCoord').focus()">Add Coordinate</button>
 <br><br>
 X Axis Length: <input type = "text" id = "xAxisLength" size = 5 
-				onkeydown="if (event.keyCode == 13) document.getElementById('setAxisButton').click()"><br>
+				onkeydown = "if (event.keyCode == 13) document.getElementById('setAxisButton').click()"><br>
 Y Axis Length: <input type = "text" id = "yAxisLength" size = 5 
-				onkeydown="if (event.keyCode == 13) document.getElementById('setAxisButton').click()"><br>
+				onkeydown = "if (event.keyCode == 13) document.getElementById('setAxisButton').click()"><br>
 <button type = "button" id = "setAxisButton" form = "coordInput" onclick = "redrawAxes();
 		document.getElementById('xAxisLength').value = '';
 		document.getElementById('yAxisLength').value = '';
 		document.getElementById('xAxisLength').focus()">Set Axis Length</button>
 <br><br>
-<input type = "checkbox" name = "option" value = "border" checked>Show Border<br>
-<input type = "checkbox" name = "option" value = "coordinates" checked>Show Coordinates<br>
-<input type = "checkbox" name = "option" value = "lines" checked>Show Lines<br>
-<button type = "button" form = "coordInput">Save as PNG</button>
+Title: <input type = "text" id = "titleText" onkeydown = "if (event.keyCode == 13) document.getElementById('setLabels').click()"><br>
+X Axis Label: <input type = "text" id = "xAxisText" onkeydown = "if (event.keyCode == 13) document.getElementById('setLabels').click()"><br>
+Y Axis Label: <input type = "text" id = "yAxisText" onkeydown = "if (event.keyCode == 13) document.getElementById('setLabels').click()"><br>
+<button type = "button" id = "setLabels" form = "coordInput" onclick = "setLabels()">Set Labels</button>
+<br><br>
+<input type = "checkbox" id = "borderBox" onchange = "setOptions()" checked>Show Border<br>
+<input type = "checkbox" id = "coordBox" onchange = "setOptions()" checked>Show Coordinates<br>
+<input type = "checkbox" id = "lineBox" onchange = "setOptions()" checked>Show Lines<br>
+<button type = "button" form = "coordInput" onclick = "exportToPNG()">Save as PNG</button>
 </form>
 
 <script>
@@ -85,7 +90,8 @@ function paintCanvas() {
 		var ctx=c.getContext("2d");
 		ctx.fillStyle="#FFFFFF";
 		ctx.fillRect(0, 0, canvasWidth, canvasHeight);	
-
+		
+		//draw each point
 		replot();
 		
 		//draw graph elements
@@ -190,7 +196,6 @@ function drawLines() {
 function exportToPNG() {
 	var img = c.toDataURL("image/png");
 	window.open(img);
-	//document.write('<img src = "' + img + '"/>');
 }
 
 //parse coordinates from a string
@@ -258,6 +263,24 @@ function replot() {
 function redrawAxes() {
 
 }
+
+//set labels
+function setLabels() {
+	title = document.getElementById("titleText").value;
+	xLabel = document.getElementById("xAxisText").value;
+	yLabel = document.getElementById("yAxisText").value;
+	paintCanvas();
+}
+
+//set options
+function setOptions() {
+	showBorder = document.getElementById("borderBox").checked;
+	showCoords = document.getElementById("coordBox").checked;
+	showLines = document.getElementById("lineBox").checked;
+	paintCanvas();
+}
+
+
 </script>
 </body>
 </html>
