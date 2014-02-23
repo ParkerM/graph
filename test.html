@@ -1,32 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<title>I like balls</title>
+<title>Graph</title>
 </head>
 <body>
 
 <div style="margin: 0 auto;">
-<canvas id="myCanvas" style="border:1px solid #c3c3c3;float:left;margin-right:20px;margin-bottom:15px">
+<canvas id="myCanvas" style="float:left;margin-right:20px;margin-bottom:15px">
 </canvas>
 </div>
 
 <script>
+//define some global variables
+var title = "My Cool Graph";
+var xLabel = "Picoseconds";
+var yLabel = "Cheeseburgers Eaten";
 var canvasWidth = 500;
 var canvasHeight = 500;
 var posTop = (window.innerHeight - canvasHeight) / 2;
 var posLeft = (window.innerWidth - canvasWidth) / 2;
 var axesOffset = 50;
 var pointSize = 4;
-//initialize arrays containing x and y values
-var coords = new Array();
+var showBorder = true;
 var showCoords = true;
 var showLines = true;
+var coords = new Array();
+var c = document.getElementById("myCanvas");
+var canvOK = 1;
 
-var c=document.getElementById("myCanvas");
-var canvOK=1;
 try {c.getContext("2d");}
 catch (er) {canvOK=0;}
 if (canvOK==1) {
+	if (!showBorder) {c.setAttribute("style", "border:1px solid #FFFFFF;float:left;margin-right:20px;margin-bottom:15px")};
 	c.style.position = "fixed";
 	c.setAttribute("width", canvasWidth);
 	c.setAttribute("height", canvasHeight);
@@ -36,24 +41,27 @@ if (canvOK==1) {
 	var ctx=c.getContext("2d");
 	ctx.fillStyle="#FFFFFF";
 	ctx.fillRect(0,0,500,500);	
-	drawAxes();	
+	
 	plotPoint(350, 175);
+	plotPoint(75, 50);
 	plotPoint(25, 25);
 	plotPoint(160, 300);
-
+	plotPoint(400, 25);
+	plotPoint(250, 250);
+	
+	drawAxes();	
+	drawLabels();
 	drawLines();
-}
-
-
-function addPoint(x, y) {
-	coords.push([x, y]);
+	drawBorder();
+	
+	exportToPNG();
 }
 
 function compare(a, b) {
 	return a[0] - b[0];
 }
 
-function drawAxes(){
+function drawAxes() {
 	//draw axes
 	var ctx = c.getContext("2d");
 	ctx.beginPath();
@@ -90,6 +98,38 @@ function drawAxes(){
 	}
 }	
 
+//draw a border
+function drawBorder() {
+	if (showBorder) {
+		var ctx = c.getContext("2d");
+		ctx.strokeStyle = "#000000";
+		ctx.beginPath();
+		ctx.moveTo(0, 0);
+		ctx.lineTo(canvasWidth, 0);
+		ctx.lineTo(canvasWidth, canvasHeight);
+		ctx.lineTo(0, canvasHeight);
+		ctx.lineTo(0, 1);
+		ctx.stroke();
+	}
+}
+
+//draw the title and the axis labels
+function drawLabels() {
+	var ctx = c.getContext("2d");
+	ctx.font = "12px Courier";
+	ctx.fillStyle = "000000";
+	ctx.textAlign = "center";
+	ctx.fillText(title, canvasWidth / 2, 25);
+	ctx.fillText(xLabel, canvasWidth / 2, canvasHeight - 15);
+	
+	//the canvas must be rotated to draw vertical text
+	ctx.save();			//save canvas position so it can be restored
+	ctx.translate(15, canvasHeight / 2);
+	ctx.rotate(Math.PI * 1.5);
+	ctx.fillText(yLabel, 0, 0);
+	ctx.restore();		//restore canvas
+}
+
 //draw a line connecting each plotted point
 function drawLines() {
 	if (showLines) {	
@@ -105,6 +145,13 @@ function drawLines() {
 	}
 }	
 
+//export the canvas to a png image
+function exportToPNG() {
+	var img = c.toDataURL("image/png");
+	window.open(img);
+	//document.write('<img src = "' + img + '"/>');
+}
+
 //draw a point and record its location in the coords array
 function plotPoint(x, y) {
 	//draw point
@@ -115,7 +162,7 @@ function plotPoint(x, y) {
 	ctx.fillRect(xPos - pointSize/2, yPos - pointSize/2, pointSize, pointSize);
 	
 	//add point to array
-	addPoint(xPos, yPos);
+	coords.push([xPos, yPos]);
 	
 	//print coordinates
 	if (showCoords) {
@@ -126,7 +173,5 @@ function plotPoint(x, y) {
 }
 	
 </script>
-<br>
-
 </body>
 </html>
