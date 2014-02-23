@@ -10,17 +10,18 @@
 </div>
 
 <form name = "coordInput">
-X Coordinate: <input type = "text" name = "xCoord" size = 5 autofocus><br>
-Y Coordinate: <input type = "text" name = "yCoord" size = 5><br>
-<button type = "button" form = "coordInput">Add Coordinate</button>
-<br><br><br>
-X Axis Length: <input type = "text" name = "xAxisLength" size = 5><br>
-Y Axis Length: <input type = "text" name = "yAxisLength" size = 5><br>
+X Coordinate: <input type = "text" id = "xCoord" size = 5 autofocus><br>
+Y Coordinate: <input type = "text" id = "yCoord" size = 5><br>
+<button type = "button" form = "coordInput" onclick = "plotPointFromInput()">Add Coordinate</button>
+<br><br>
+X Axis Length: <input type = "text" id = "xAxisLength" size = 5><br>
+Y Axis Length: <input type = "text" id = "yAxisLength" size = 5><br>
 <button type = "button" form = "coordInput">Set Axis Length</button>
-<br><br><br>
+<br><br>
 <input type = "checkbox" name = "option" value = "border" checked>Show Border<br>
 <input type = "checkbox" name = "option" value = "coordinates" checked>Show Coordinates<br>
 <input type = "checkbox" name = "option" value = "lines" checked>Show Lines<br>
+<button type = "button" form = "coordInput">Save as PNG</button>
 </form>
 
 <script>
@@ -42,39 +43,44 @@ var c = document.getElementById("myCanvas");
 var canvOK = 1;
 
 //main
-try {c.getContext("2d");}
-catch (er) {canvOK=0;}
-if (canvOK==1) {
-	if (!showBorder) {c.setAttribute("style", "border:1px solid #FFFFFF;float:left;margin-right:20px;margin-bottom:15px")};
-	c.style.position = "fixed";
-	c.setAttribute("width", canvasWidth);
-	c.setAttribute("height", canvasHeight);
-	c.style.top = posTop + "px";
-	c.style.left = posLeft + "px";
-	
-	var ctx=c.getContext("2d");
-	ctx.fillStyle="#FFFFFF";
-	ctx.fillRect(0,0,500,500);	
-	
-	var inputCoord = "(0, 0)";
-//	while (inputCoord != null) {
-//		inputCoord = prompt("Enter a coordinate. Press cancel when finished.", "(x, y)");
-//		parseCoord(inputCoord);
-//	}
-	
-	plotPoint(350, 175);
-	plotPoint(75, 50);
-	plotPoint(25, 25);
-	plotPoint(160, 300);
-	plotPoint(400, 25);
-	plotPoint(250, 250);
-	
-	drawAxes();	
-	drawLabels();
-	drawLines();
-	drawBorder();
-	
-	//exportToPNG();
+paintCanvas();
+
+//draws everything to canvas
+function paintCanvas() {
+	try {c.getContext("2d");}
+	catch (er) {canvOK=0;}
+	if (canvOK==1) {
+		//begin by clearing canvas
+		var ctx = c.getContext("2d");
+		ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+		
+		//set canvas attributes
+		c.style.position = "fixed";
+		c.setAttribute("width", canvasWidth);
+		c.setAttribute("height", canvasHeight);
+		c.style.top = posTop + "px";
+		c.style.left = posLeft + "px";
+		
+		//create blank canvas
+		var ctx=c.getContext("2d");
+		ctx.fillStyle="#FFFFFF";
+		ctx.fillRect(0, 0, canvasWidth, canvasHeight);	
+		
+		
+		//plot some test points
+		plotPoint(350, 175);
+		plotPoint(75, 50);
+		plotPoint(25, 25);
+		plotPoint(160, 300);
+		plotPoint(400, 25);
+		plotPoint(250, 250);
+		
+		//draw graph elements
+		if (showBorder) {drawBorder()};
+		drawAxes();	
+		drawLabels();
+		drawLines();
+	}
 }
 
 //comparator for sorting coordinates
@@ -202,11 +208,13 @@ function plotPoint(x, y) {
 	var ctx = c.getContext("2d");
 	var xPos = x + axesOffset;
 	var yPos = (canvasHeight - axesOffset) - y;
-	ctx.fillStyle = "000000";
-	ctx.fillRect(xPos - pointSize/2, yPos - pointSize/2, pointSize, pointSize);
-	
+		
 	//add point to array
 	coords.push([xPos, yPos]);
+	
+	//draw point
+	ctx.fillStyle = "000000";
+	ctx.fillRect(xPos - pointSize/2, yPos - pointSize/2, pointSize, pointSize);
 	
 	//print coordinates
 	if (showCoords) {
@@ -214,8 +222,35 @@ function plotPoint(x, y) {
 		ctx.textAlign = "left";
 		ctx.fillText("(" + x + ", " + y + ")", xPos + pointSize/2, yPos + pointSize/2);
 	}
+		alert(coords.length);
+
 }
 	
+//plot point from form input
+function plotPointFromInput() {
+	var x = parseFloat(document.getElementById("xCoord").value);
+	var y = parseFloat(document.getElementById("yCoord").value);
+
+	plotPoint(x, y);
+	//paintCanvas();
+	//replot();
+}	
+
+//redraw all points
+function replot() {
+	var ctx = c.getContext("2d");
+	ctx.fillStyle = "000000";
+	ctx.font = "12px Courier";
+	ctx.textAlign = "left";
+
+	//draw points
+	for (var i = 0; i < coords.length; i++) {
+		ctx.fillRect(coords[i][0] - pointSize/2, coords[i][1] - pointSize/2, pointSize, pointSize);
+		if (showCoords) {
+			ctx.fillText("(" + x + ", " + y + ")", coords[i][0] + pointSize/2, coords[i][1] + pointSize/2);
+		}
+	}
+}
 </script>
 </body>
 </html>
