@@ -38,7 +38,8 @@ Y Axis Label: <input type = "text" id = "yAxisText" onkeydown = "if (event.keyCo
 <input type = "checkbox" id = "borderBox" onchange = "setOptions()" checked>Show Border<br>
 <input type = "checkbox" id = "coordBox" onchange = "setOptions()" checked>Show Coordinates<br>
 <input type = "checkbox" id = "lineBox" onchange = "setOptions()" checked>Show Lines<br>
-<button type = "button" form = "coordInput" onclick = "exportToPNG()">Save as PNG</button>
+<button type = "button" form = "coordInput" onclick = "exportToPNG()">Save as PNG</button><br>
+<button type = "button" form = "coordInput" onclick = "reset()">Clear</button>
 </form>
 
 <script>
@@ -280,6 +281,14 @@ function setOptions() {
 	paintCanvas();
 }
 
+//reset coordinates and canvas
+function reset() {
+	coords = new Array();
+	title = "";
+	xLabel = "";
+	yLabel = "";
+	paintCanvas();
+}
 
 </script>
 </body>
