@@ -26,9 +26,12 @@ X Axis Length: <input type = "text" id = "xAxisLength" size = 5
 				onkeydown = "if (event.keyCode == 13) document.getElementById('setAxisButton').click()"><br>
 Y Axis Length: <input type = "text" id = "yAxisLength" size = 5 
 				onkeydown = "if (event.keyCode == 13) document.getElementById('setAxisButton').click()"><br>
+# Axis Markers: <input type = "text" id = "numMarkers" size = 5 
+				onkeydown = "if (event.keyCode == 13) document.getElementById('setAxisButton').click()"><br>
 <button type = "button" id = "setAxisButton" form = "coordInput" onclick = "redrawAxes();
 		document.getElementById('xAxisLength').value = '';
 		document.getElementById('yAxisLength').value = '';
+		document.getElementById('numMarkers').value = '';
 		document.getElementById('xAxisLength').focus()">Set Axis Length</button>
 <br><br>
 Title: <input type = "text" id = "titleText" onkeydown = "if (event.keyCode == 13) document.getElementById('setLabels').click()"><br>
@@ -50,9 +53,14 @@ var xLabel = "Picoseconds";
 var yLabel = "Cheeseburgers Eaten";
 var canvasWidth = 500;
 var canvasHeight = 500;
+var graphWidth = 400;
+var graphHeight = 400;
 var posTop = (window.innerHeight - canvasHeight) / 2;
 var posLeft = (window.innerWidth - canvasWidth) / 2;
 var axesOffset = 50;
+var xMax = 400;
+var yMax = 400;
+var numAxisMarkers = 5;
 var pointSize = 4;
 var showBorder = true;
 var showCoords = true;
@@ -121,29 +129,29 @@ function drawAxes() {
 	ctx.stroke();
 	
 	//draw interval markers
-	xInterval = (canvasWidth - (2 * axesOffset)) / 10;
-	yInterval = (canvasHeight - (2 * axesOffset)) / 10;
+	xInterval = xMax / numAxisMarkers;
+	yInterval = yMax / numAxisMarkers;
 	ctx.font = "12px Courier";
 	ctx.fillStyle = "000000";
 	
 	//x axis interval markers
-	for (var i = 1; i < 11; i++) {
+	for (var i = 1; i < numAxisMarkers + 1; i++) {
 		ctx.beginPath();
-		ctx.moveTo(axesOffset + (i * xInterval), canvasHeight - axesOffset);
-		ctx.lineTo(axesOffset + (i * xInterval), canvasHeight - axesOffset - 5);
+		ctx.moveTo(axesOffset + (i * graphWidth / numAxisMarkers), canvasHeight - axesOffset);
+		ctx.lineTo(axesOffset + (i * graphWidth / numAxisMarkers), canvasHeight - axesOffset - 5); //5 = marker length
 		ctx.stroke();
 		ctx.textAlign = "center";
-		ctx.fillText((i * xInterval), axesOffset + (i * xInterval), canvasHeight - axesOffset + 12);
+		ctx.fillText(Number((i * xInterval).toFixed(3)), axesOffset + (i * graphWidth / numAxisMarkers), canvasHeight - axesOffset + 12); //12 is text offset
 	}
 	
 	//y axis interval markers
-	for (var i = 1; i < 11; i++) {
+	for (var i = 1; i < numAxisMarkers + 1; i++) {
 		ctx.beginPath();
-		ctx.moveTo(axesOffset, canvasHeight - axesOffset - (i * yInterval));
-		ctx.lineTo(axesOffset + 5, canvasHeight - axesOffset - (i * yInterval));
+		ctx.moveTo(axesOffset, canvasHeight - axesOffset - (i * (graphHeight / numAxisMarkers)));
+		ctx.lineTo(axesOffset + 5, canvasHeight - axesOffset - (i * (graphHeight / numAxisMarkers))); //5 = marker length
 		ctx.stroke();
 		ctx.textAlign = "right";
-		ctx.fillText((i * yInterval), axesOffset - 4, canvasHeight - axesOffset - (i * yInterval) + 3);
+		ctx.fillText(Number((i * yInterval).toFixed(3)), axesOffset - 4, canvasHeight - axesOffset - (i * (graphHeight / numAxisMarkers)) + 3); //4 and 3 are text offset
 	}
 }	
 
@@ -200,28 +208,6 @@ function exportToPNG() {
 	window.open(img);
 }
 
-//parse coordinates from a string
-function parseCoord(inputString) {
-	var x, y;
-	var counter = 1;
-	var oldCounter = counter;
-	while (inputString.charAt(counter) != ",") {
-		counter++;
-	}
-	x = inputString.substring(oldCounter, counter);
-	oldCounter = counter++;
-	if (inputString.charAt(counter) == " ") {
-		counter++;
-		oldCounter++;
-	}
-	while (inputString.charAt(counter) != ")") {
-		counter++;
-	}
-	y = inputString.substring(oldCounter, counter);
-	
-	plotPoint(x, y);
-}
-
 //record a points location in the coords array
 function addPoint(x, y) {
 	var xPos = x + axesOffset;
@@ -249,6 +235,7 @@ function replot() {
 	
 	var xPos;
 	var yPos;
+	//var ratio = 
 	
 	//draw points
 	for (var i = 0; i < coords.length; i++) {
@@ -263,7 +250,10 @@ function replot() {
 
 //redraw axes
 function redrawAxes() {
-
+	xMax = parseFloat(document.getElementById("xAxisLength").value);
+	yMax = parseFloat(document.getElementById("yAxisLength").value);
+	numAxisMarkers = parseInt(document.getElementById("numMarkers").value);
+	paintCanvas();
 }
 
 //set labels
