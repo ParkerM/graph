@@ -41,9 +41,12 @@ Y Axis Label: <input type = "text" id = "yAxisText" onkeydown = "if (event.keyCo
 <br><br>
 <input type = "checkbox" id = "borderBox" onchange = "setOptions()" checked>Show Border<br>
 <input type = "checkbox" id = "coordBox" onchange = "setOptions()" checked>Show Coordinates<br>
+<input type = "checkbox" id = "gridBox" onchange = "setOptions()">Show Grid<br>
 <input type = "checkbox" id = "lineBox" onchange = "setOptions()" checked>Show Lines<br>
 <button type = "button" form = "coordInput" onclick = "exportToPNG()">Save as PNG</button><br>
 <button type = "button" form = "coordInput" onclick = "reset()">Clear</button>
+<br><br><br><br>
+<textarea rows = "10" cols = "50" id = "console"></textarea>
 </form>
 
 <script>
@@ -60,10 +63,11 @@ var posLeft = (window.innerWidth - canvasWidth) / 2;
 var axesOffset = 50;
 var xMax = 400;
 var yMax = 400;
-var numAxisMarkers = 5;
+var numAxisMarkers = 8;
 var pointSize = 4;
 var showBorder = true;
 var showCoords = true;
+var showGrid = false;
 var showLines = true;
 var coords = new Array();
 var c = document.getElementById("myCanvas");
@@ -71,12 +75,12 @@ var canvOK = 1;
 
 //main
 //add some test points
-addPoint(350, 175);
-addPoint(75, 50);
-addPoint(25, 25);
-addPoint(160, 300);
-addPoint(400, 25);
-addPoint(250, 250);
+addPoint(400, 400);
+//addPoint(50, 50);
+//addPoint(25, 25);
+addPoint(100, 100);
+addPoint(200, 200);
+addPoint(300, 300);
 
 paintCanvas();
 
@@ -134,11 +138,15 @@ function drawAxes() {
 	ctx.font = "12px Courier";
 	ctx.fillStyle = "000000";
 	
+	//decide if interval marks should be a grid or a small dash
+	var markLength = 5;
+	if (showGrid) { markLength = graphWidth };
+	
 	//x axis interval markers
 	for (var i = 1; i < numAxisMarkers + 1; i++) {
 		ctx.beginPath();
 		ctx.moveTo(axesOffset + (i * graphWidth / numAxisMarkers), canvasHeight - axesOffset);
-		ctx.lineTo(axesOffset + (i * graphWidth / numAxisMarkers), canvasHeight - axesOffset - 5); //5 = marker length
+		ctx.lineTo(axesOffset + (i * graphWidth / numAxisMarkers), canvasHeight - axesOffset - markLength); //5 = marker length
 		ctx.stroke();
 		ctx.textAlign = "center";
 		ctx.fillText(Number((i * xInterval).toFixed(3)), axesOffset + (i * graphWidth / numAxisMarkers), canvasHeight - axesOffset + 12); //12 is text offset
@@ -148,7 +156,7 @@ function drawAxes() {
 	for (var i = 1; i < numAxisMarkers + 1; i++) {
 		ctx.beginPath();
 		ctx.moveTo(axesOffset, canvasHeight - axesOffset - (i * (graphHeight / numAxisMarkers)));
-		ctx.lineTo(axesOffset + 5, canvasHeight - axesOffset - (i * (graphHeight / numAxisMarkers))); //5 = marker length
+		ctx.lineTo(axesOffset + markLength, canvasHeight - axesOffset - (i * (graphHeight / numAxisMarkers))); //5 = marker length
 		ctx.stroke();
 		ctx.textAlign = "right";
 		ctx.fillText(Number((i * yInterval).toFixed(3)), axesOffset - 4, canvasHeight - axesOffset - (i * (graphHeight / numAxisMarkers)) + 3); //4 and 3 are text offset
@@ -189,14 +197,15 @@ function drawLabels() {
 
 //draw a line connecting each plotted point
 function drawLines() {
-	if (showLines) {	
-		coords.sort(compare);	//sort the array by ascending x values
+	if (showLines) {
+		var xRatio = graphWidth / xMax;
+		var yRatio = graphHeight / yMax;
 		var ctx = c.getContext("2d");
 		ctx.strokeStyle = "000000";
 		ctx.beginPath();
-		ctx.moveTo(coords[0][0], coords[0][1]);
+		ctx.moveTo(axesOffset + (xRatio * coords[0][0]), canvasHeight - axesOffset - (yRatio * coords[0][1]));
 		for (var i = 1; i < coords.length; i++){
-			ctx.lineTo(coords[i][0], coords[i][1]);
+			ctx.lineTo(axesOffset + (xRatio * coords[i][0]), canvasHeight - axesOffset - (yRatio * coords[i][1]));
 		}
 		ctx.stroke();
 	}
@@ -210,12 +219,11 @@ function exportToPNG() {
 
 //record a points location in the coords array
 function addPoint(x, y) {
-	var xPos = x + axesOffset;
-	var yPos = (canvasHeight - axesOffset) - y;
+	//var xPos = x + axesOffset;
+	//var yPos = (canvasHeight - axesOffset) - y;
 		
 	//add point to array
-	coords.push([xPos, yPos]);
-	
+	coords.push([x, y]);
 	paintCanvas();
 }
 	
@@ -233,17 +241,24 @@ function replot() {
 	ctx.font = "12px Courier";
 	ctx.textAlign = "left";
 	
-	var xPos;
-	var yPos;
-	//var ratio = 
+	//sort coordinates by ascending x values
+	coords.sort(compare); 
+	
+	//var xPos;
+	//var yPos;
+	var xRatio = graphWidth / xMax;
+	var yRatio = graphHeight / yMax;
 	
 	//draw points
 	for (var i = 0; i < coords.length; i++) {
-		ctx.fillRect(coords[i][0] - pointSize/2, coords[i][1] - pointSize/2, pointSize, pointSize);
+		dbgMSG(coords[i][0] + ", " + coords[i][1]);
+		ctx.fillRect(axesOffset + (xRatio * coords[i][0]) - pointSize/2, 
+					 canvasHeight - axesOffset - (yRatio * coords[i][1]) - pointSize/2,
+   					 pointSize, pointSize);
 		if (showCoords) {
-			xPos = coords[i][0] - axesOffset;
-			yPos = canvasHeight - axesOffset - coords[i][1];
-			ctx.fillText("(" + xPos + ", " + yPos + ")", coords[i][0] + pointSize/2, coords[i][1] + pointSize/2);
+			//xPos = (xRatio * coords[i][0]);
+			//yPos = canvasHeight + axesOffset - (yRatio * coords[i][1]);
+			ctx.fillText("(" + coords[i][0] + ", " + coords[i][0] + ")", (xRatio * coords[i][0]) + axesOffset + pointSize/2, canvasHeight - axesOffset - (yRatio * coords[i][1]) + pointSize/2);
 		}
 	}
 }
@@ -268,6 +283,7 @@ function setLabels() {
 function setOptions() {
 	showBorder = document.getElementById("borderBox").checked;
 	showCoords = document.getElementById("coordBox").checked;
+	showGrid = document.getElementById("gridBox").checked;
 	showLines = document.getElementById("lineBox").checked;
 	paintCanvas();
 }
@@ -281,6 +297,10 @@ function reset() {
 	paintCanvas();
 }
 
+//debug console
+function dbgMSG(msg) {
+	document.getElementById("console").value = document.getElementById("console").value + msg + "\n";
+}
 </script>
 </body>
 </html>
