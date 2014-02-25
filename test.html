@@ -3,6 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <title>Graph</title>
+<style>
+p.sansserif{font:11px Verdana,Helvetica,sans-serif;}
+</style>
+
 </head>
 <body>
 
@@ -10,7 +14,9 @@
 <canvas id="myCanvas" style="float:left;margin-right:20px;margin-bottom:15px"></canvas>
 </div>
 
+
 <form name = "inputForms">
+<p class = "sansserif">
 X Coordinate: <input type = "text" id = "xCoord" size = 5 
 			   onkeydown = "if (event.keyCode == 13) document.getElementById('addCoordButton').click()" 
 			   autofocus><br>
@@ -46,7 +52,9 @@ Y Axis Label: <input type = "text" id = "yAxisText" onkeydown = "if (event.keyCo
 <button type = "button" form = "inputForms" onclick = "exportToPNG()">Save as PNG</button><br>
 <button type = "button" form = "inputForms" onclick = "reset()">Clear</button><br>
 <textarea rows = "10" cols = "10" id = "console"></textarea>
+</p>
 </form>
+
 
 <script>
 //define some global variables
