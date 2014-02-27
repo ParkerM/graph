@@ -2,25 +2,21 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Graph</title>
-<style>
-p.sansserif{font:11px Verdana,Helvetica,sans-serif;}
-</style>
+<title>Plot Points</title>
+<link rel = "stylesheet" type = "text/css" href = "style.css">
 </head>
+
 <body>
 
-<div style="margin: 0 auto;">
-<canvas id="myCanvas" style="float:left;margin-right:20px;margin-bottom:15px"></canvas>
-</div>
-
-<form name = "inputForms">
+<div id = "container">
+<div id = "one">
 <p class = "sansserif">
 X Coordinate: <input type = "text" id = "xCoord" size = 5 
 			   onkeydown = "if (event.keyCode == 13) document.getElementById('addCoordButton').click()" 
 			   autofocus><br>
 Y Coordinate: <input type = "text" id = "yCoord" size = 5
 			   onkeydown = "if (event.keyCode == 13) document.getElementById('addCoordButton').click()"><br>
-<button type = "button" id = "addCoordButton" form = "inputForms" 
+<button type = "button" id = "addCoordButton"
 		onclick = "addPointFromInput(); 
 		document.getElementById('xCoord').value = '';
 		document.getElementById('yCoord').value = '';
@@ -32,7 +28,7 @@ Y Axis Length: <input type = "text" id = "yAxisLength" size = 5
 				onkeydown = "if (event.keyCode == 13) document.getElementById('setAxisButton').click()"><br>
 # Axis Markers: <input type = "text" id = "numMarkers" size = 5 
 				onkeydown = "if (event.keyCode == 13) document.getElementById('setAxisButton').click()"><br>
-<button type = "button" id = "setAxisButton" form = "inputForms" onclick = "redrawAxes();
+<button type = "button" id = "setAxisButton" onclick = "redrawAxes();
 		document.getElementById('xAxisLength').value = '';
 		document.getElementById('yAxisLength').value = '';
 		document.getElementById('numMarkers').value = '';
@@ -41,19 +37,30 @@ Y Axis Length: <input type = "text" id = "yAxisLength" size = 5
 Title: <input type = "text" id = "titleText" onkeydown = "if (event.keyCode == 13) document.getElementById('setLabels').click()"><br>
 X Axis Label: <input type = "text" id = "xAxisText" onkeydown = "if (event.keyCode == 13) document.getElementById('setLabels').click()"><br>
 Y Axis Label: <input type = "text" id = "yAxisText" onkeydown = "if (event.keyCode == 13) document.getElementById('setLabels').click()"><br>
-<button type = "button" id = "setLabels" form = "inputForms" onclick = "setLabels()">Set Labels</button>
+<button type = "button" id = "setLabels" onclick = "setLabels()">Set Labels</button>
 <br><br>
 <input type = "checkbox" id = "borderBox" onchange = "setOptions()" checked>Show Border<br>
 <input type = "checkbox" id = "coordBox" onchange = "setOptions()" checked>Show Coordinates<br>
 <input type = "checkbox" id = "gridBox" onchange = "setOptions()" checked>Show Grid<br>
 <input type = "checkbox" id = "lineBox" onchange = "setOptions()" checked>Show Lines<br>
-<button type = "button" form = "inputForms" onclick = "exportToPNG()">Save as PNG</button><br>
-<button type = "button" form = "inputForms" onclick = "reset()">Clear</button><br>
+<button type = "button" onclick = "exportToPNG()">Save as PNG</button><br>
+<button type = "button" onclick = "reset()">Clear</button><br>
 <textarea rows = "10" cols = "10" id = "console"></textarea>
 </p>
-</form>
 
-<script type = "text/javascript" src = "graph.js">
+<font size = "2">Contact: admin@plotpoints.net</font>
+</div>
+
+<div id="graph">
+<canvas id = "myCanvas"></canvas>
+</div>
+
+<div id = "three">
+	This is the third thing
+</div>
+</div>
+
+<script type = "text/javascript" src = "graph.js" charset="UTF-8">
 </script>
 
 </body>

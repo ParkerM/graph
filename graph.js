@@ -6,8 +6,6 @@ var canvasWidth = 500;
 var canvasHeight = 500;
 var graphWidth = 400;
 var graphHeight = 400;
-var posTop = (window.innerHeight - canvasHeight) / 2;
-var posLeft = (window.innerWidth - canvasWidth) / 2;
 var axesOffset = 50;
 var xMax = 400;
 var yMax = 400;
@@ -46,8 +44,6 @@ function paintCanvas() {
 		c.style.position = "fixed";
 		c.setAttribute("width", canvasWidth);
 		c.setAttribute("height", canvasHeight);
-		c.style.top = posTop + "px";
-		c.style.left = posLeft + "px";
 		
 		//create blank canvas
 		var ctx=c.getContext("2d");
