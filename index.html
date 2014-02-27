@@ -9,34 +9,39 @@
 <body>
 
 <div id = "container">
-	<div id = "left">
-		<p class = "sansserif">
-		X Coordinate: <input type = "text" id = "xCoord" size = 5 
-					   onkeydown = "if (event.keyCode == 13) document.getElementById('addCoordButton').click()" 
-					   autofocus><br>
-		Y Coordinate: <input type = "text" id = "yCoord" size = 5
-					   onkeydown = "if (event.keyCode == 13) document.getElementById('addCoordButton').click()"><br>
-		<button type = "button" id = "addCoordButton"
-				onclick = "addPointFromInput(); 
-				document.getElementById('xCoord').value = '';
-				document.getElementById('yCoord').value = '';
-				document.getElementById('xCoord').focus()">Add Coordinate</button>
+
+	<div id = "header">
+		This is the header
+	</div>
+
+	<div id = "leftText">
+		X Coordinate: <br>
+		Y Coordinate: <br>
+		
 		<br><br>
-		X Axis Length: <input type = "text" id = "xAxisLength" size = 5 
-						onkeydown = "if (event.keyCode == 13) document.getElementById('setAxisButton').click()"><br>
-		Y Axis Length: <input type = "text" id = "yAxisLength" size = 5 
-						onkeydown = "if (event.keyCode == 13) document.getElementById('setAxisButton').click()"><br>
-		# Axis Markers: <input type = "text" id = "numMarkers" size = 5 
-						onkeydown = "if (event.keyCode == 13) document.getElementById('setAxisButton').click()"><br>
-		<button type = "button" id = "setAxisButton" onclick = "redrawAxes();
-				document.getElementById('xAxisLength').value = '';
-				document.getElementById('yAxisLength').value = '';
-				document.getElementById('numMarkers').value = '';
-				document.getElementById('xAxisLength').focus()">Set Axis Length</button>
+		X Axis Length: <br>
+		Y Axis Length: <br>
+		# Axis Markers: <br>
+
 		<br><br>
-		Title: <input type = "text" id = "titleText" onkeydown = "if (event.keyCode == 13) document.getElementById('setLabels').click()"><br>
-		X Axis Label: <input type = "text" id = "xAxisText" onkeydown = "if (event.keyCode == 13) document.getElementById('setLabels').click()"><br>
-		Y Axis Label: <input type = "text" id = "yAxisText" onkeydown = "if (event.keyCode == 13) document.getElementById('setLabels').click()"><br>
+		Title: <br>
+		X Axis Label: <br>
+		Y Axis Label: <br>
+
+		<br>
+	</div>
+
+	<div id = "leftInput">
+		<input type = "text" id = "xCoord" size = 5 onkeydown = "if (event.keyCode == 13) document getElementById('addCoordButton').click()" autofocus><br>
+		<input type = "text" id = "yCoord" size = 5 onkeydown = "if (event.keyCode == 13) document.getElementById('addCoordButton').click()"><br>
+		<button type = "button" id = "addCoordButton" onclick = "addPointFromInput(); document.getElementById('xCoord').value = ''; document.getElementById('yCoord').value = ''; document.getElementById('xCoord').focus()">Add Coordinate</button><br>
+		<input type = "text" id = "xAxisLength" size = 5 onkeydown = "if (event.keyCode == 13) document.getElementById('setAxisButton').click()"><br>
+		<input type = "text" id = "yAxisLength" size = 5 onkeydown = "if (event.keyCode == 13) document.getElementById('setAxisButton').click()"><br>
+		<input type = "text" id = "numMarkers" size = 5 onkeydown = "if (event.keyCode == 13) document.getElementById('setAxisButton').click()"><br>
+		<button type = "button" id = "setAxisButton" onclick = "redrawAxes(); document.getElementById('xAxisLength').value = ''; document.getElementById('yAxisLength').value = ''; document.getElementById('numMarkers').value = ''; document.getElementById('xAxisLength').focus()">Set Axis Length</button><br>
+		<input type = "text" id = "titleText" onkeydown = "if (event.keyCode == 13) document.getElementById('setLabels').click()"><br>
+		<input type = "text" id = "xAxisText" onkeydown = "if (event.keyCode == 13) document.getElementById('setLabels').click()"><br>
+		<input type = "text" id = "yAxisText" onkeydown = "if (event.keyCode == 13) document.getElementById('setLabels').click()"><br>
 		<button type = "button" id = "setLabels" onclick = "setLabels()">Set Labels</button>
 		<br><br>
 		<input type = "checkbox" id = "borderBox" onchange = "setOptions()" checked>Show Border<br>
@@ -46,25 +51,24 @@
 		<button type = "button" onclick = "exportToPNG()">Save as PNG</button><br>
 		<button type = "button" onclick = "reset()">Clear</button><br>
 		<textarea rows = "10" cols = "10" id = "console"></textarea>
-		<br>
-		</p>
 	</div>
 
 	<div id = "canvasWrapper">
 		<canvas id = "myCanvas"></canvas>
 	</div>
 
-	<div id = "left">
+	<div id = "leftText">
 		This is the third thing
 	</div>
+
+	<div id = "bottom">
+		Contact: admin@plotpoints.net
+	</div>
+
 </div>
 
 <br>
-<div id = "bottom">
-	<p class = "sansserif">
-	Contact: admin@plotpoints.net
-	</p>
-</div>
+
 
 <script type = "text/javascript" src = "graph.js" charset="UTF-8"></script>
 

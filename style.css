@@ -1,15 +1,35 @@
-p.sansserif{font:11px Verdana,Helvetica,sans-serif;}
+body {
+	font: normal 11px Verdana, Helvetica, sans-serif;
+}
 
 #container {
-	display: inline-block;
+	display:inline-block;
 	position:relative;
 	width:100%;
 	height:100%;
 }
 
+#header {
+	font: normal 20px Verdana, Helvetica, sans-serif;
+	text-align:center;
+}
+
 #left {
+	padding:5px;
 	float:left;
 	margin-left:15px;
+	margin-right:15px;
+}
+
+#leftText {
+	text-align:right;
+	float:left;
+	margin-left:15px;
+}
+
+#leftInput {
+	text-align:left;
+	float:left;
 	margin-right:15px;
 }
 
@@ -17,12 +37,13 @@ p.sansserif{font:11px Verdana,Helvetica,sans-serif;}
 	width:500px;
 	height:500px;
 	float:left;
+	margin-top:15px;
 	margin-left:15px;
 	margin-right:15px;
 }
 
 #bottom {
-	float:bottom;
-	margin-left:15px;
-	margin-right:15px;
+	clear:both;
+	text-align:center;
+	margin:0 auto;
 }
