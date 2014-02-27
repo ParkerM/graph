@@ -16,6 +16,7 @@ var showBorder = true;
 var showCoords = true;
 var showGrid = true;
 var showLines = true;
+var showPoints = true;
 var coords = new Array();
 var c = document.getElementById("myCanvas");
 var canvOK = 1;
@@ -219,9 +220,11 @@ function replot() {
 	
 	//draw points
 	for (var i = 0; i < coords.length; i++) {
-		ctx.fillRect(axesOffset + (xRatio * coords[i][0]) - pointSize/2, 
+		if (showPoints) {
+			ctx.fillRect(axesOffset + (xRatio * coords[i][0]) - pointSize/2, 
 					 canvasHeight - axesOffset - (yRatio * coords[i][1]) - pointSize/2,
    					 pointSize, pointSize);
+		}
 		if (showCoords) {
 			ctx.fillText("(" + coords[i][0] + ", " + coords[i][1] + ")", (xRatio * coords[i][0]) + axesOffset + pointSize/2, canvasHeight - axesOffset - (yRatio * coords[i][1]) + pointSize/2);
 		}
@@ -250,6 +253,7 @@ function setOptions() {
 	showCoords = document.getElementById("coordBox").checked;
 	showGrid = document.getElementById("gridBox").checked;
 	showLines = document.getElementById("lineBox").checked;
+	showPoints = document.getElementById("pointBox").checked;
 	paintCanvas();
 }
 
