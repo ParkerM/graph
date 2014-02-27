@@ -1,24 +1,28 @@
 p.sansserif{font:11px Verdana,Helvetica,sans-serif;}
 
 #container {
+	display: inline-block;
+	position:relative;
 	width:100%;
 	height:100%;
 }
 
-#one {
+#left {
 	float:left;
 	margin-left:15px;
 	margin-right:15px;
 }
 
-#graph {
+#canvasWrapper {
+	width:500px;
+	height:500px;
 	float:left;
 	margin-left:15px;
 	margin-right:15px;
-	background-color:yellow;
 }
 
-#three {
-	float:left;
-	background-color:blue;
+#bottom {
+	float:bottom;
+	margin-left:15px;
+	margin-right:15px;
 }
