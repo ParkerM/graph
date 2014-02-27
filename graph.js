@@ -23,11 +23,13 @@ var canvOK = 1;
 
 //main
 //add some test points
-addPoint(300, 175);
-addPoint(400, 400);
-addPoint(100, 25);
-addPoint(200, 75);
-addPoint(0, 0);
+// addPoint(300, 175);
+// addPoint(400, 400);
+// addPoint(100, 25);
+// addPoint(200, 75);
+// addPoint(0, 0);
+addPoint(50, 100);
+addPoint(75, 250);
 
 //draw the canvas
 paintCanvas();
@@ -59,8 +61,8 @@ function paintCanvas() {
 		drawLabels();
 		drawLines();
 
-		//draw linear function
-		drawLinearFunc(0.333, 100);
+		//draw line of best fit
+		linearRegression();
 
 	}
 }
@@ -167,17 +169,33 @@ function drawLabels() {
 
 //draw a line given slope and initial y value
 function drawLinearFunc(slope, y0) {
+	printMSG("y = " + slope + "x + " + y0);
 	//ratios for line to move as axes change
 	var xRatio = graphWidth / xMax;
 	var yRatio = graphHeight / yMax;
 	var ctx = c.getContext("2d");
 	ctx.strokeStyle = "000000";
 	ctx.beginPath();
-	ctx.moveTo(axesOffset, canvasHeight - axesOffset - (y0 * yRatio));
-	if (slope > 0){
+	
+	//calculate beginning point
+	if (slope >= 0) {
+		if (y0 >= 0) {
+			ctx.moveTo(axesOffset, canvasHeight - axesOffset - (y0 * yRatio));
+		} else {
+			ctx.moveTo(axesOffset - (y0 / slope), canvasHeight - axesOffset);
+		}
+	} else {
+		if (y0 >= yMax) {
+			ctx.moveTo(axesOffset + ((yMax - y0) / slope), axesOffset);
+		} else {
+			ctx.moveTo(axesOffset, canvasHeight - axesOffset - (y0 * yRatio));
+		}
+	}
+	//calculate end point
+	if (slope >= 0){
 		var x1 = (yMax - y0) / slope;
 		var y1 = (xMax * slope) + y0;
-		if (x1 * xRatio <= xMax){
+		if (x1 <= xMax){
 			ctx.lineTo(axesOffset + (x1 * xRatio), axesOffset);
 		} else {
 			ctx.lineTo(canvasWidth - axesOffset, canvasHeight - axesOffset - (y1 * yRatio));
@@ -185,10 +203,9 @@ function drawLinearFunc(slope, y0) {
 	} else {
 		var x1 = -y0 / slope;
 		var y1 = (xMax * slope) + y0;
-		if (x1 * xRatio <= xMax * xRatio){
+		if (x1 <= xMax){
 			ctx.lineTo(axesOffset + (x1 * xRatio), canvasHeight - axesOffset);
 		} else {
-			printMSG(y1 * yRatio);
 			ctx.lineTo(canvasWidth - axesOffset, canvasHeight - axesOffset - (y1 * yRatio));
 		}
 	}
@@ -211,6 +228,38 @@ function drawLines() {
 		ctx.stroke();
 	}
 }	
+
+//perform a simple linear regression on the current points
+function linearRegression() {
+	var slope;
+	var y0;
+	var n = coords.length;
+
+	//intialize sum variables
+	var x = 0;
+	var y = 0;
+	var xy = 0;
+	var xSquared = 0;
+	var ySquared = 0;
+
+	//calculate sums
+	for (var i = 0; i < n; i++){
+		x += coords [i][0];
+		y += coords [i][1];
+		xy += coords[i][0] * coords[i][1];
+		xSquared += coords[i][0] * coords[i][0];
+		ySquared += coords[i][1] * coords[i][i];
+	}
+
+	//calculate slope
+	slope = ((n * xy) - (x * y)) / ((n * xSquared) - (x * x));
+
+	//calculate y0
+	y0 = ((y * xSquared) - (x * xy)) / ((n * xSquared) - (x * x));
+
+	//draw the function
+	drawLinearFunc(slope, y0);
+}
 
 //export the canvas to a png image
 function exportToPNG() {
