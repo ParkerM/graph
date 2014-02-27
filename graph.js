@@ -58,6 +58,10 @@ function paintCanvas() {
 		drawAxes();	
 		drawLabels();
 		drawLines();
+
+		//draw linear function
+		drawLinearFunc(0.333, 100);
+
 	}
 }
 
@@ -159,6 +163,36 @@ function drawLabels() {
 	ctx.rotate(Math.PI * 1.5); //rotate canvas
 	ctx.fillText(yLabel, 0, 0);
 	ctx.restore();		//restore canvas
+}
+
+//draw a line given slope and initial y value
+function drawLinearFunc(slope, y0) {
+	//ratios for line to move as axes change
+	var xRatio = graphWidth / xMax;
+	var yRatio = graphHeight / yMax;
+	var ctx = c.getContext("2d");
+	ctx.strokeStyle = "000000";
+	ctx.beginPath();
+	ctx.moveTo(axesOffset, canvasHeight - axesOffset - (y0 * yRatio));
+	if (slope > 0){
+		var x1 = (yMax - y0) / slope;
+		var y1 = (xMax * slope) + y0;
+		if (x1 * xRatio <= xMax){
+			ctx.lineTo(axesOffset + (x1 * xRatio), axesOffset);
+		} else {
+			ctx.lineTo(canvasWidth - axesOffset, canvasHeight - axesOffset - (y1 * yRatio));
+		}
+	} else {
+		var x1 = -y0 / slope;
+		var y1 = (xMax * slope) + y0;
+		if (x1 * xRatio <= xMax * xRatio){
+			ctx.lineTo(axesOffset + (x1 * xRatio), canvasHeight - axesOffset);
+		} else {
+			printMSG(y1 * yRatio);
+			ctx.lineTo(canvasWidth - axesOffset, canvasHeight - axesOffset - (y1 * yRatio));
+		}
+	}
+	ctx.stroke();
 }
 
 //draw a line connecting each plotted point
