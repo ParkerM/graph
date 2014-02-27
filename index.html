@@ -9,50 +9,102 @@
 <body>
 
 <div id = "container">
-
 	<div id = "header">
-		This is the header
+		Plot Points
 	</div>
+<div id = "leftPanel">
 
-	<div id = "leftText">
-		X Coordinate: <br>
-		Y Coordinate: <br>
+<div id = "inputWrapper">
+	<div id = "leftText">X Coordinate:</div>
+	<div id = "leftInput"><input type = "text" id = "xCoord" size = 5 onkeydown = "if (event.keyCode == 13) document getElementById('addCoordButton').click()" autofocus></div>
+</div>
+
+<div id = "inputWrapper">
+	<div id = "leftText">Y Coordinate:</div>
+	<div id = "leftInput"><input type = "text" id = "yCoord" size = 5 onkeydown = "if (event.keyCode == 13) document.getElementById('addCoordButton').click()"><br></div>
+</div>
+
+<div id = "inputWrapper">
+	<div id = "leftText"></div>
+	<div id = "leftInput"><button type = "button" id = "addCoordButton" onclick = "addPointFromInput(); document.getElementById('xCoord').value = ''; document.getElementById('yCoord').value = ''; document.getElementById('xCoord').focus()">Add Coordinate</button></div>
+</div><br><br><br>
+
+<div id = "inputWrapper">
+	<div id = "leftText">X Axis Length:</div>
+	<div id = "leftInput"><input type = "text" id = "xAxisLength" size = 5 onkeydown = "if (event.keyCode == 13) document.getElementById('setAxisButton').click()"></div>
+</div>
+
+<div id = "inputWrapper">
+	<div id = "leftText">Y Axis Length:</div>
+	<div id = "leftInput"><input type = "text" id = "yAxisLength" size = 5 onkeydown = "if (event.keyCode == 13) document.getElementById('setAxisButton').click()"></div>
+</div>
+
+<div id = "inputWrapper">
+	<div id = "leftText"># Axis Markers:</div>
+	<div id = "leftInput"><input type = "text" id = "numMarkers" size = 5 onkeydown = "if (event.keyCode == 13) document.getElementById('setAxisButton').click()"></div>
+</div>
+
+<div id = "inputWrapper">
+	<div id = "leftText"></div>
+	<div id = "leftInput"><button type = "button" id = "setAxisButton" onclick = "redrawAxes(); document.getElementById('xAxisLength').value = ''; document.getElementById('yAxisLength').value = ''; document.getElementById('numMarkers').value = ''; document.getElementById('xAxisLength').focus()">Set Axis Length</button></div>
+</div><br><br><br>
+
+<div id = "inputWrapper">
+	<div id = "leftText">Title:</div>
+	<div id = "leftInput"><input type = "text" id = "titleText" size = "13" onkeydown = "if (event.keyCode == 13) document.getElementById('setLabels').click()"></div>
+</div>
+
+<div id = "inputWrapper">
+	<div id = "leftText">X Axis Label:</div>
+	<div id = "leftInput"><input type = "text" id = "xAxisText" size = "13" onkeydown = "if (event.keyCode == 13) document.getElementById('setLabels').click()"></div>
+</div>
+
+<div id = "inputWrapper">
+	<div id = "leftText">Y Axis Label:</div>
+	<div id = "leftInput"><input type = "text" id = "yAxisText" size = "13" onkeydown = "if (event.keyCode == 13) document.getElementById('setLabels').click()"></div>
+</div>
+
+<div id = "inputWrapper">
+	<div id = "leftText"></div>
+	<div id = "leftInput"><button type = "button" id = "setLabels" onclick = "setLabels()">Set Labels</button></div>
+</div><br><br><br>
+
+<div id = "inputWrapper">
+	<div id = "leftText">Show Border</div>
+	<div id = "leftCheckbox"><input type = "checkbox" id = "borderBox" onchange = "setOptions()" checked></div>
+</div>
+
+<div id = "inputWrapper">
+	<div id = "leftText">Show Coordinates</div>
+	<div id = "leftCheckbox"><input type = "checkbox" id = "coordBox" onchange = "setOptions()" checked></div>
+</div>
+
+<div id = "inputWrapper">
+	<div id = "leftText">Show Grid</div>
+	<div id = "leftCheckbox"><input type = "checkbox" id = "gridBox" onchange = "setOptions()" checked></div>
+</div>
+
+<div id = "inputWrapper">
+	<div id = "leftText">Show Lines</div>
+	<div id = "leftCheckbox"><input type = "checkbox" id = "lineBox" onchange = "setOptions()" checked></div>
+</div><br><br>
+
+<div id = "inputWrapper">
+	<div id = "leftText"></div>
+	<div id = "leftInput"><button type = "button" onclick = "exportToPNG()">Save as PNG</button></div>
+</div>
+
+<div id = "inputWrapper">
+	<div id = "leftText"></div>
+	<div id = "leftInput"><button type = "button" onclick = "reset()">Clear</button></div>
+</div>
+
+<div id = "inputWrapper">
+	<div id = "leftText"></div>
+	<div id = "leftInput"><textarea rows = "10" cols = "10" id = "console"></textarea></div>
+</div>
 		
-		<br><br>
-		X Axis Length: <br>
-		Y Axis Length: <br>
-		# Axis Markers: <br>
-
-		<br><br>
-		Title: <br>
-		X Axis Label: <br>
-		Y Axis Label: <br>
-
-		<br>
-	</div>
-
-	<div id = "leftInput">
-		<input type = "text" id = "xCoord" size = 5 onkeydown = "if (event.keyCode == 13) document getElementById('addCoordButton').click()" autofocus><br>
-		<input type = "text" id = "yCoord" size = 5 onkeydown = "if (event.keyCode == 13) document.getElementById('addCoordButton').click()"><br>
-		<button type = "button" id = "addCoordButton" onclick = "addPointFromInput(); document.getElementById('xCoord').value = ''; document.getElementById('yCoord').value = ''; document.getElementById('xCoord').focus()">Add Coordinate</button><br>
-		<input type = "text" id = "xAxisLength" size = 5 onkeydown = "if (event.keyCode == 13) document.getElementById('setAxisButton').click()"><br>
-		<input type = "text" id = "yAxisLength" size = 5 onkeydown = "if (event.keyCode == 13) document.getElementById('setAxisButton').click()"><br>
-		<input type = "text" id = "numMarkers" size = 5 onkeydown = "if (event.keyCode == 13) document.getElementById('setAxisButton').click()"><br>
-		<button type = "button" id = "setAxisButton" onclick = "redrawAxes(); document.getElementById('xAxisLength').value = ''; document.getElementById('yAxisLength').value = ''; document.getElementById('numMarkers').value = ''; document.getElementById('xAxisLength').focus()">Set Axis Length</button><br>
-		<input type = "text" id = "titleText" onkeydown = "if (event.keyCode == 13) document.getElementById('setLabels').click()"><br>
-		<input type = "text" id = "xAxisText" onkeydown = "if (event.keyCode == 13) document.getElementById('setLabels').click()"><br>
-		<input type = "text" id = "yAxisText" onkeydown = "if (event.keyCode == 13) document.getElementById('setLabels').click()"><br>
-		<button type = "button" id = "setLabels" onclick = "setLabels()">Set Labels</button>
-		<br><br>
-		<input type = "checkbox" id = "borderBox" onchange = "setOptions()" checked>Show Border<br>
-		<input type = "checkbox" id = "coordBox" onchange = "setOptions()" checked>Show Coordinates<br>
-		<input type = "checkbox" id = "gridBox" onchange = "setOptions()" checked>Show Grid<br>
-		<input type = "checkbox" id = "lineBox" onchange = "setOptions()" checked>Show Lines<br>
-		<button type = "button" onclick = "exportToPNG()">Save as PNG</button><br>
-		<button type = "button" onclick = "reset()">Clear</button><br>
-		<textarea rows = "10" cols = "10" id = "console"></textarea>
-	</div>
-
+</div>
 	<div id = "canvasWrapper">
 		<canvas id = "myCanvas"></canvas>
 	</div>
@@ -61,7 +113,7 @@
 		This is the third thing
 	</div>
 
-	<div id = "bottom">
+	<div id = "footer">
 		Contact: admin@plotpoints.net
 	</div>
 

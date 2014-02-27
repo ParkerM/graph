@@ -41,7 +41,6 @@ function paintCanvas() {
 		ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 		
 		//set canvas attributes
-		c.style.position = "fixed";
 		c.setAttribute("width", canvasWidth);
 		c.setAttribute("height", canvasHeight);
 		
