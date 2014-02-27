@@ -58,7 +58,9 @@ body {
 
 #footer {
 	clear:both;
-	width:1000px;
+	height:100%;
+	width:auto;
+	padding-top:60px;
 	text-align:center;
 	margin:0 auto;
 }
