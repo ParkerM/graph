@@ -4,12 +4,12 @@ var xLabel = "Picoseconds";
 var yLabel = "Cheeseburgers Eaten";
 var canvasWidth = 500;
 var canvasHeight = 500;
-var graphWidth = 400;
-var graphHeight = 400;
 var axesOffset = 50;
-var xMax = 450;
-var yMax = 450;
-var numAxisMarkers = 9;
+var graphWidth = canvasWidth - (2 * axesOffset);
+var graphHeight = canvasHeight - (2 * axesOffset);
+var xMax = 15;
+var yMax = 15;
+var numAxisMarkers = 15;
 var pointSize = 4;
 var alpha = 0.2;
 var showBorder = true;
@@ -24,18 +24,32 @@ var canvOK = 1;
 
 //main
 //add some test points
-addPoint(300, 175);
-addPoint(400, 400);
-addPoint(100, 25);
-addPoint(209, 75);
-addPoint(0, 0);
-addPoint(200, 100);
-addPoint(50, 150);
-addPoint(123, 69);
-addPoint(340, 222);
+// addPoint(300, 175);
+// addPoint(400, 400);
+// addPoint(100, 25);
+// addPoint(209, 75);
+// addPoint(0, 0);
+// addPoint(200, 100);
+// addPoint(50, 150);
+// addPoint(123, 69);
+// addPoint(340, 222);
+addPoint(1, 9);
+addPoint(3, 2);
+addPoint(5, 6);
+addPoint(6, 1);
+addPoint(9, 4);
+addPoint(12, 8);
 
 //draw the canvas
 paintCanvas();
+
+
+
+polynomialRegression();
+
+drawPolynomial();
+
+
 
 //draws everything to canvas
 function paintCanvas() {
@@ -214,6 +228,34 @@ function drawLinearFunc(slope, y0) {
 	ctx.stroke();
 }
 
+function drawPolynomial() {
+	var coefficients = new Array(10.2219, -2.3928, 0.1852);
+	var aCoef = 0.1852;
+	var bCoef = -2.3928;
+	var cCoef = 10.2219;
+	var xRatio = graphWidth / xMax;
+	var yRatio = graphHeight / yMax;
+	var n = coefficients.length;
+	var precision = 200;
+	var fX = 0;
+	var ctx = c.getContext("2d");
+	var dbg = "";
+	ctx.strokeStyle = "FF0000";
+	ctx.beginPath(axesOffset, canvasHeight - axesOffset - (cCoef * yRatio));
+	for (var i = 0; i <= precision; i++) {
+		dbg = dbg.concat(i * (graphWidth / precision) + "\n");
+		xVar = (i * (graphWidth / precision) / (xRatio));
+		// for (var i = 0; i < coefficients.length; i++) {
+
+		// }
+		fX = aCoef * Math.pow(xVar, 2) + bCoef * xVar + cCoef;
+		dbg = dbg.concat(xVar + ", ");
+		ctx.lineTo(axesOffset + (i * (graphWidth / precision)), canvasHeight - axesOffset - (yRatio * fX));
+	}
+	printMSG(dbg);
+	ctx.stroke();
+}
+
 //draw a line connecting each plotted point
 function drawLines() {
 	if (showLines) {
@@ -267,6 +309,73 @@ function linearRegression() {
 	} else {
 		paintCanvas();
 	}
+}
+
+//perform a polynomial regression on the current points
+function polynomialRegression() {
+	//we will perform the function [X] = inv([A]t * [A]) * [A]t * [B]
+	var precision = 3;
+	var n = coords.length;
+	var A = new Array(n);  //2D
+	var B = new Array(n);  //1D
+	var X = new Array(n-1);  //1D
+	var AtA = new Array(precision); //A transpose A 3x3
+	var AtAi = new Array(precision); //inverse of A transpose A
+	var AtB = new Array(precision); //A transpose B
+	var dbg = ""; //debug string
+
+
+	//initialize A
+	for (var i = 0; i < n; i++) {
+		A[i] = new Array(precision);
+	}
+
+	//create A
+	for (var i = 0; i < n; i++) {
+		for (var j = 0; j < precision; j++) {
+			A[i][j] = Math.pow(coords[i][0], precision - j - 1);
+		}
+		dbg = dbg.concat(A[i][0] + ", " + A[i][1] + ", " + A[i][2] + "\n");
+	}
+
+	//create B
+	for (var i = 0; i < n; i++) {
+		B[i] = coords[i][1];
+		dbg = dbg.concat(B[i] + "\n");
+	}
+
+	//initialize and zero AtA
+	for (var i = 0; i < precision; i++) {
+		AtA[i] = new Array(precision);
+		for (var j = 0; j < precision; j++) {
+			AtA[i][j] = 0;
+		}
+	}
+
+	//create A transpose A
+	for (var i = 0; i < precision; i++) {
+		for (var j = 0; j < precision; j++) {
+			for (var k = 0; k < n; k++) {
+				AtA[i][j] += A[k][i] * A[k][j];
+			}
+		}
+		dbg = dbg.concat(AtA[i][0] + ", " + AtA[i][1] + ", " + AtA[i][2] + "\n");
+	}
+
+	//initialize and zero AtB
+	for(var i = 0; i < n; i++) {
+		AtB[i] = 0;
+	}
+
+	//create AtB
+	for (var i = 0; i < precision; i++) {
+		for (var j = 0; j < n; j++) {
+			AtB[i] += A[j][i] * B[j];
+		}
+		dbg = dbg.concat(AtB[i] + "\n");
+	}
+	printMSG(dbg);
+
 }
 
 //export the canvas to a png image
