@@ -17,19 +17,22 @@ var showCoords = true;
 var showGrid = true;
 var showLines = true;
 var showPoints = true;
+var linearClicked = false;
 var coords = new Array();
 var c = document.getElementById("myCanvas");
 var canvOK = 1;
 
 //main
 //add some test points
-// addPoint(300, 175);
-// addPoint(400, 400);
-// addPoint(100, 25);
-// addPoint(200, 75);
-// addPoint(0, 0);
-addPoint(50, 100);
-addPoint(75, 250);
+addPoint(300, 175);
+addPoint(400, 400);
+addPoint(100, 25);
+addPoint(209, 75);
+addPoint(0, 0);
+addPoint(200, 100);
+addPoint(50, 150);
+addPoint(123, 69);
+addPoint(340, 222);
 
 //draw the canvas
 paintCanvas();
@@ -60,10 +63,6 @@ function paintCanvas() {
 		drawAxes();	
 		drawLabels();
 		drawLines();
-
-		//draw line of best fit
-		linearRegression();
-
 	}
 }
 
@@ -174,7 +173,7 @@ function drawLinearFunc(slope, y0) {
 	var xRatio = graphWidth / xMax;
 	var yRatio = graphHeight / yMax;
 	var ctx = c.getContext("2d");
-	ctx.strokeStyle = "000000";
+	ctx.strokeStyle = document.getElementById("linearColor").value;
 	ctx.beginPath();
 	
 	//calculate beginning point
@@ -231,34 +230,41 @@ function drawLines() {
 
 //perform a simple linear regression on the current points
 function linearRegression() {
-	var slope;
-	var y0;
-	var n = coords.length;
+	if(!linearClicked){
+		var slope;
+		var y0;
+		var n = coords.length;
 
-	//intialize sum variables
-	var x = 0;
-	var y = 0;
-	var xy = 0;
-	var xSquared = 0;
-	var ySquared = 0;
+		//intialize sum variables
+		var x = 0;
+		var y = 0;
+		var xy = 0;
+		var xSquared = 0;
+		var ySquared = 0;
 
-	//calculate sums
-	for (var i = 0; i < n; i++){
-		x += coords [i][0];
-		y += coords [i][1];
-		xy += coords[i][0] * coords[i][1];
-		xSquared += coords[i][0] * coords[i][0];
-		ySquared += coords[i][1] * coords[i][i];
+		//calculate sums
+		for (var i = 0; i < n; i++){
+			x += coords [i][0];
+			y += coords [i][1];
+			xy += coords[i][0] * coords[i][1];
+			xSquared += coords[i][0] * coords[i][0];
+			ySquared += coords[i][1] * coords[i][i];
+		}
+
+		//calculate slope
+		slope = ((n * xy) - (x * y)) / ((n * xSquared) - (x * x));
+
+		//calculate y0
+		y0 = ((y * xSquared) - (x * xy)) / ((n * xSquared) - (x * x));
+
+		//draw the function
+		drawLinearFunc(slope, y0);
+
+		linearClicked = true;
+	} else {
+		linearClicked = false;
+		paintCanvas();
 	}
-
-	//calculate slope
-	slope = ((n * xy) - (x * y)) / ((n * xSquared) - (x * x));
-
-	//calculate y0
-	y0 = ((y * xSquared) - (x * xy)) / ((n * xSquared) - (x * x));
-
-	//draw the function
-	drawLinearFunc(slope, y0);
 }
 
 //export the canvas to a png image
