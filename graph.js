@@ -7,9 +7,9 @@ var canvasHeight = 500;
 var graphWidth = 400;
 var graphHeight = 400;
 var axesOffset = 50;
-var xMax = 400;
-var yMax = 400;
-var numAxisMarkers = 8;
+var xMax = 450;
+var yMax = 450;
+var numAxisMarkers = 9;
 var pointSize = 4;
 var alpha = 0.2;
 var showBorder = true;
@@ -63,6 +63,8 @@ function paintCanvas() {
 		drawAxes();	
 		drawLabels();
 		drawLines();
+
+		linearClicked = false;
 	}
 }
 
@@ -262,7 +264,6 @@ function linearRegression() {
 
 		linearClicked = true;
 	} else {
-		linearClicked = false;
 		paintCanvas();
 	}
 }
