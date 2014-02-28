@@ -180,14 +180,15 @@ function drawLinearFunc(slope, y0) {
 	
 	//calculate beginning point
 	if (slope >= 0) {
+		var xIntercept = 0;
 		if (y0 >= 0) {
 			ctx.moveTo(axesOffset, canvasHeight - axesOffset - (y0 * yRatio));
 		} else {
-			ctx.moveTo(axesOffset - (y0 / slope), canvasHeight - axesOffset);
+			ctx.moveTo(axesOffset - yRatio * (y0 / slope), canvasHeight - axesOffset);
 		}
 	} else {
 		if (y0 >= yMax) {
-			ctx.moveTo(axesOffset + ((yMax - y0) / slope), axesOffset);
+			ctx.moveTo(axesOffset + yRatio * ((yMax - y0) / slope), axesOffset);
 		} else {
 			ctx.moveTo(axesOffset, canvasHeight - axesOffset - (y0 * yRatio));
 		}
