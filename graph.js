@@ -8,7 +8,9 @@ var axesOffset = 50;
 var graphWidth = canvasWidth - (2 * axesOffset);
 var graphHeight = canvasHeight - (2 * axesOffset);
 var xMax = 15;
+var xMin = 0;
 var yMax = 15;
+var yMin = 0;
 var numAxisMarkers = 15;
 var pointSize = 4;
 var alpha = 0.2;
@@ -47,7 +49,11 @@ paintCanvas();
 
 polynomialRegression();
 
-drawPolynomial();
+var X = new Array(3);
+X[0] = 0.1852;
+X[1] = -2.3928;
+X[2] = 10.2219;
+drawPolynomial(X);
 
 
 
@@ -228,31 +234,40 @@ function drawLinearFunc(slope, y0) {
 	ctx.stroke();
 }
 
-function drawPolynomial() {
-	var coefficients = new Array(10.2219, -2.3928, 0.1852);
-	var aCoef = 0.1852;
-	var bCoef = -2.3928;
-	var cCoef = 10.2219;
+function drawPolynomial(X) {
+	// var aCoef = 0.1852;
+	// var bCoef = -2.3928;
+	// var cCoef = 10.2219;
 	var xRatio = graphWidth / xMax;
 	var yRatio = graphHeight / yMax;
-	var n = coefficients.length;
-	var precision = 200;
+	var n = X.length;
+	var precision = 10000;
 	var fX = 0;
 	var ctx = c.getContext("2d");
-	var dbg = "";
+	var strokeOn = true;
 	ctx.strokeStyle = "FF0000";
-	ctx.beginPath(axesOffset, canvasHeight - axesOffset - (cCoef * yRatio));
+	ctx.beginPath(axesOffset, canvasHeight - axesOffset - (X[n-1] * yRatio));
 	for (var i = 0; i <= precision; i++) {
-		dbg = dbg.concat(i * (graphWidth / precision) + "\n");
 		xVar = (i * (graphWidth / precision) / (xRatio));
-		// for (var i = 0; i < coefficients.length; i++) {
+		fX = 0;
+		for (var j = 0; j < n; j++) {
+			fX += X[j] * Math.pow(xVar, (n - 1) - j);
+		}
+		//skip drawing if yMax < f(x) < 0
+		if ((fX > yMax) || (fX < yMin)) {
+			//do something else
+			if (strokeOn) {
+				ctx.stroke();
+				strokeOn = false;
+			} else {
+				ctx.moveTo(axesOffset + (i * (graphWidth / precision)), canvasHeight - axesOffset - (yRatio * fX));
+			}
+		} else {
+			strokeOn = true;
+			ctx.lineTo(axesOffset + (i * (graphWidth / precision)), canvasHeight - axesOffset - (yRatio * fX));
+		}
 
-		// }
-		fX = aCoef * Math.pow(xVar, 2) + bCoef * xVar + cCoef;
-		dbg = dbg.concat(xVar + ", ");
-		ctx.lineTo(axesOffset + (i * (graphWidth / precision)), canvasHeight - axesOffset - (yRatio * fX));
 	}
-	printMSG(dbg);
 	ctx.stroke();
 }
 
@@ -313,7 +328,7 @@ function linearRegression() {
 
 //perform a polynomial regression on the current points
 function polynomialRegression() {
-	//we will perform the function [X] = inv([A]t * [A]) * [A]t * [B]
+	//we will solve the linear system [A]t [A] [X] = [A]t [B]
 	var precision = 3;
 	var n = coords.length;
 	var A = new Array(n);  //2D
