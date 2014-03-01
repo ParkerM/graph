@@ -20,6 +20,7 @@ var showGrid = true;
 var showLines = true;
 var showPoints = true;
 var linearClicked = false;
+var polynomialClicked = false;
 var coords = new Array();
 var c = document.getElementById("myCanvas");
 var canvOK = 1;
@@ -49,11 +50,11 @@ paintCanvas();
 
 polynomialRegression();
 
-var X = new Array(3);
-X[0] = 0.1852;
-X[1] = -2.3928;
-X[2] = 10.2219;
-drawPolynomial(X);
+// var X = new Array(3);
+// X[0] = 0.1852;
+// X[1] = -2.3928;
+// X[2] = 10.2219;
+// drawPolynomial(X);
 
 
 
@@ -85,6 +86,7 @@ function paintCanvas() {
 		drawLines();
 
 		linearClicked = false;
+		polynomialClicked = false;
 	}
 }
 
@@ -245,7 +247,7 @@ function drawPolynomial(X) {
 	var fX = 0;
 	var ctx = c.getContext("2d");
 	var strokeOn = true;
-	ctx.strokeStyle = "FF0000";
+	ctx.strokeStyle = document.getElementById("polynomialColor").value;
 	ctx.beginPath(axesOffset, canvasHeight - axesOffset - (X[n-1] * yRatio));
 	for (var i = 0; i <= precision; i++) {
 		xVar = (i * (graphWidth / precision) / (xRatio));
@@ -329,6 +331,7 @@ function linearRegression() {
 //perform a polynomial regression on the current points
 function polynomialRegression() {
 	//we will solve the linear system [A]t [A] [X] = [A]t [B]
+	if (!polynomialClicked) {
 	var precision = 3;
 	var n = coords.length;
 	var A = new Array(n);  //2D
@@ -419,10 +422,8 @@ function polynomialRegression() {
 		for (j = n - 1; j > col; j--) {
 			temp -= X[j] * AtA[col][j];
 		}
-		X[col] = temp / A[col][col];
+		X[col] = temp / AtA[col][col];
 	}
-
-	//AtA is now an upper triangular matrix
 
 
 	for (i = 0; i < n; i++) {
@@ -439,6 +440,13 @@ function polynomialRegression() {
 	}
 	printMSG(dbg);
 
+	drawPolynomial(X);
+
+	polynomialClicked = true;
+	} else {
+		paintCanvas();
+	}
+
 }
 
 //swap rows of a 1D array
@@ -449,7 +457,7 @@ function swapRow1D(A, row1, row2) {
 	return A;
 }
 
-//swap rows of a 2D array
+//swap rows of an n*n 2D array
 function swapRow2D(A, row1, row2) {
 	tempArray = new Array(A.length);
 	for (var i = 0; i < A.length; i++) {

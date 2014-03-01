@@ -112,13 +112,17 @@
 				<a href = "https://github.com/ParkerM/graph">GitHub</a>
 			</div>
 		</div>
-		<div id = "leftPanel">
+		<div id = "rightPanel">
 			<div id = "inputWrapper">
-				<div id = "leftInput"><button type = "button" onclick = "linearRegression()">Linear Fit</button></div>
+				<div id = "leftButton"><button type = "button" onclick = "linearRegression()">Linear Fit</button></div>
 				<div id = "leftInput"><input type = "color" id = "linearColor" value = "#FF0000"></div>
-			</div><br><br><br><br>
+			</div>
 			<div id = "inputWrapper">
-				<div id = "leftInput"><textarea rows = "29" cols = "15" id = "console"></textarea></div>
+				<div id = "leftButton"><button type = "button" onclick = "polynomialRegression()">Polynomial Fit</button></div>
+				<div id = "leftInput"><input type = "color" id = "polynomialColor" value = "#FF0000"></div>
+			</div><br><br><br><br>
+			<div id = "textboxWrapper">
+				<textarea rows = "29" cols = "15" id = "console"></textarea>
 			</div>
 		</div>
 	</div>
