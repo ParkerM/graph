@@ -390,7 +390,6 @@ function polynomialRegression() {
 		dbg = dbg.concat(AtB[i] + "\n");
 	}
 	printMSG(dbg);
-
 }
 
 //export the canvas to a png image
