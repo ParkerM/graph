@@ -46,18 +46,6 @@ addPoint(12, 8);
 //draw the canvas
 paintCanvas();
 
-
-
-polynomialRegression();
-
-// var X = new Array(3);
-// X[0] = 0.1852;
-// X[1] = -2.3928;
-// X[2] = 10.2219;
-// drawPolynomial(X);
-
-
-
 //draws everything to canvas
 function paintCanvas() {
 	try {c.getContext("2d");}
