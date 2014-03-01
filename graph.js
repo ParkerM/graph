@@ -333,7 +333,6 @@ function polynomialRegression() {
 	var n = coords.length;
 	var A = new Array(n);  //2D
 	var B = new Array(n);  //1D
-	var X = new Array(n-1);  //1D
 	var AtA = new Array(precision); //A transpose A 3x3
 	var AtAi = new Array(precision); //inverse of A transpose A
 	var AtB = new Array(precision); //A transpose B
@@ -389,7 +388,76 @@ function polynomialRegression() {
 		}
 		dbg = dbg.concat(AtB[i] + "\n");
 	}
+
+	//gaussian elimination. adapted from rosettacode.org
+	var max, temp, i, j, col;		
+	n = AtA.length; //reassign n to length of AtA
+	var X = new Array(n);
+	for (col = 0; col < n; col++) {
+		j = col;
+		max = AtA[j][j];
+		for (i = col + 1; i < n; i++) {
+			temp = Math.abs(AtA[i][col]);
+			if (temp > max){
+				j = i; 
+				max = temp;
+			}
+		}
+		AtA = swapRow2D(AtA, col, j);
+		AtB = swapRow1D(AtB, col, j);
+		for (i = col + 1; i < n; i++) {
+			temp = AtA[i][col] / AtA[col][col];
+			for (j = col + 1; j < n; j++) {
+				AtA[i][j] -= temp * AtA[col][j];
+			}
+			AtA[i][col] = 0;
+			AtB[i] -= temp * AtB[col];
+		}
+	}
+	for (col = n - 1; col >= 0; col--) {
+		temp = AtB[col];
+		for (j = n - 1; j > col; j--) {
+			temp -= X[j] * AtA[col][j];
+		}
+		X[col] = temp / A[col][col];
+	}
+
+	//AtA is now an upper triangular matrix
+
+
+	for (i = 0; i < n; i++) {
+		dbg = dbg.concat(AtA[i][0] + ", " + AtA[i][1] + ", " + AtA[i][2] + "\n");
+	}
+
+	//AtB = swapRow1D(AtB, 1, 2);
+	for (i = 0; i < n; i++) {
+		dbg = dbg.concat(AtB[i] + "\n");
+	}
+
+	for (i = 0; i < n; i++) {
+		dbg = dbg.concat(X[i] + "\n");
+	}
 	printMSG(dbg);
+
+}
+
+//swap rows of a 1D array
+function swapRow1D(A, row1, row2) {
+	var temp = A[row1];
+	A[row1] = A[row2];
+	A[row2] = temp;
+	return A;
+}
+
+//swap rows of a 2D array
+function swapRow2D(A, row1, row2) {
+	tempArray = new Array(A.length);
+	for (var i = 0; i < A.length; i++) {
+		tempArray[i] = A[row1][i];
+		A[row1][i] = A[row2][i];
+		A[row2][i] = tempArray[i];
+	}
+	return A;
 }
 
 //export the canvas to a png image
