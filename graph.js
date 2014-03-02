@@ -11,6 +11,7 @@ var xMax = 15;
 var xMin = 0;
 var yMax = 15;
 var yMin = 0;
+var msg = "";
 var numAxisMarkers = 15;
 var pointSize = 4;
 var alpha = 0.2;
@@ -181,7 +182,6 @@ function drawLabels() {
 
 //draw a line given slope and initial y value
 function drawLinearFunc(slope, y0) {
-	printMSG("y = " + slope + "x + " + y0);
 	//ratios for line to move as axes change
 	var xRatio = graphWidth / xMax;
 	var yRatio = graphHeight / yMax;
@@ -223,8 +223,13 @@ function drawLinearFunc(slope, y0) {
 		}
 	}
 	ctx.stroke();
+
+	//print function to textarea
+	msg += "f(x) = " + slope + "x + " + y0 + "\n\n";
+	printMSG(msg);
 }
 
+//draw a polynomial given an array of coefficients
 function drawPolynomial(X) {
 	var xRatio = graphWidth / xMax;
 	var yRatio = graphHeight / yMax;
@@ -243,7 +248,6 @@ function drawPolynomial(X) {
 		}
 		//skip drawing if yMax < f(x) < 0
 		if ((fX > yMax) || (fX < yMin)) {
-			//do something else
 			if (strokeOn) {
 				ctx.stroke();
 				strokeOn = false;
@@ -259,11 +263,15 @@ function drawPolynomial(X) {
 	ctx.stroke();
 
 	//print function to textarea
-	var msg = "f(x) = ";
-	for (var i = 0; i < polynomialOrder - 1; i++) {
-		msg += X[i].toPrecision(6) + "x^" + (X.length - i - 1) + " + ";
+	if (polynomialOrder < coords.length){
+		msg += "f(x) = ";
+		for (var i = 0; i < polynomialOrder - 1; i++) {
+			msg += X[i].toPrecision(6) + "x^" + (X.length - i - 1) + " + ";
+		}
+		msg += X[X.length - 2].toPrecision(6) + "x + " + X[X.length - 1].toPrecision(6) + "\n\n";
+	} else {
+		msg += "Error: n must be less than # points\n\n";
 	}
-	msg += X[X.length - 2].toPrecision(6) + "x + " + X[X.length - 1].toPrecision(6);
 	printMSG(msg);
 }
 
@@ -334,7 +342,6 @@ function polynomialRegression() {
 	var AtA = new Array(precision); //A transpose A 3x3
 	var AtAi = new Array(precision); //inverse of A transpose A
 	var AtB = new Array(precision); //A transpose B
-	var dbg = ""; //debug string
 
 	//initialize A
 	for (var i = 0; i < n; i++) {
@@ -473,10 +480,12 @@ function replot() {
 	coords.sort(compare); 
 	
 	//print coords to text box
-	var msg = "";
+	msg = "";
 	for (var i = 0; i < coords.length; i++) {
 		msg = msg.concat("(", + coords[i][0] + "," + coords[i][1] + ")\n");
 	}
+	msg += "\n";
+
 	printMSG(msg);
 	
 	//ratios for points to move as axes change
