@@ -21,6 +21,7 @@ var showLines = true;
 var showPoints = true;
 var linearClicked = false;
 var polynomialClicked = false;
+var polynomialOrder = 3;
 var coords = new Array();
 var c = document.getElementById("myCanvas");
 var canvOK = 1;
@@ -225,9 +226,6 @@ function drawLinearFunc(slope, y0) {
 }
 
 function drawPolynomial(X) {
-	// var aCoef = 0.1852;
-	// var bCoef = -2.3928;
-	// var cCoef = 10.2219;
 	var xRatio = graphWidth / xMax;
 	var yRatio = graphHeight / yMax;
 	var n = X.length;
@@ -259,6 +257,14 @@ function drawPolynomial(X) {
 
 	}
 	ctx.stroke();
+
+	//print function to textarea
+	var msg = "f(x) = ";
+	for (var i = 0; i < polynomialOrder - 1; i++) {
+		msg += X[i].toPrecision(6) + "x^" + (X.length - i - 1) + " + ";
+	}
+	msg += X[X.length - 2].toPrecision(6) + "x + " + X[X.length - 1].toPrecision(6);
+	printMSG(msg);
 }
 
 //draw a line connecting each plotted point
@@ -320,7 +326,8 @@ function linearRegression() {
 function polynomialRegression() {
 	//we will solve the linear system [A]t [A] [X] = [A]t [B]
 	if (!polynomialClicked) {
-	var precision = 3;
+	polynomialOrder = parseInt(document.getElementById("polyOrder").value);
+	var precision = polynomialOrder + 1;
 	var n = coords.length;
 	var A = new Array(n);  //2D
 	var B = new Array(n);  //1D
@@ -328,7 +335,6 @@ function polynomialRegression() {
 	var AtAi = new Array(precision); //inverse of A transpose A
 	var AtB = new Array(precision); //A transpose B
 	var dbg = ""; //debug string
-
 
 	//initialize A
 	for (var i = 0; i < n; i++) {
@@ -340,13 +346,11 @@ function polynomialRegression() {
 		for (var j = 0; j < precision; j++) {
 			A[i][j] = Math.pow(coords[i][0], precision - j - 1);
 		}
-		dbg = dbg.concat(A[i][0] + ", " + A[i][1] + ", " + A[i][2] + "\n");
 	}
 
 	//create B
 	for (var i = 0; i < n; i++) {
 		B[i] = coords[i][1];
-		dbg = dbg.concat(B[i] + "\n");
 	}
 
 	//initialize and zero AtA
@@ -364,7 +368,6 @@ function polynomialRegression() {
 				AtA[i][j] += A[k][i] * A[k][j];
 			}
 		}
-		dbg = dbg.concat(AtA[i][0] + ", " + AtA[i][1] + ", " + AtA[i][2] + "\n");
 	}
 
 	//initialize and zero AtB
@@ -377,7 +380,6 @@ function polynomialRegression() {
 		for (var j = 0; j < n; j++) {
 			AtB[i] += A[j][i] * B[j];
 		}
-		dbg = dbg.concat(AtB[i] + "\n");
 	}
 
 	//gaussian elimination. adapted from rosettacode.org
@@ -412,21 +414,6 @@ function polynomialRegression() {
 		}
 		X[col] = temp / AtA[col][col];
 	}
-
-
-	for (i = 0; i < n; i++) {
-		dbg = dbg.concat(AtA[i][0] + ", " + AtA[i][1] + ", " + AtA[i][2] + "\n");
-	}
-
-	//AtB = swapRow1D(AtB, 1, 2);
-	for (i = 0; i < n; i++) {
-		dbg = dbg.concat(AtB[i] + "\n");
-	}
-
-	for (i = 0; i < n; i++) {
-		dbg = dbg.concat(X[i] + "\n");
-	}
-	printMSG(dbg);
 
 	drawPolynomial(X);
 

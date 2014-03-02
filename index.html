@@ -118,14 +118,18 @@
 		<div id = "rightPanel">
 			<div id = "inputWrapper">
 				<div id = "leftButton"><button type = "button" onclick = "linearRegression()">Linear Fit</button></div>
-				<div id = "leftInput"><input type = "color" id = "linearColor" value = "#FF0000"></div>
+				<div id = "rightInput"><input type = "color" id = "linearColor" value = "#FF0000"></div>
 			</div>
 			<div id = "inputWrapper">
-				<div id = "leftButton"><button type = "button" onclick = "polynomialRegression()">Polynomial Fit</button></div>
-				<div id = "leftInput"><input type = "color" id = "polynomialColor" value = "#FF0000"></div>
-			</div><br><br><br><br>
+				<div id = "leftButton"><button type = "button" id = "polyRegButton" onclick = "polynomialRegression()">Polynomial Fit</button></div>
+				<div id = "rightInput"><input type = "color" id = "polynomialColor" value = "#FF0000"></div>
+			</div>
+			<div id = "inputWrapper">
+				<div id = "leftText">n = </div>
+				<div id = "leftInput"><input type = "text" id = "polyOrder" size = "1" value = "2" onkeydown = "if (event.keyCode == 13) document.getElementById('polyRegButton').click()"></div>
+			</div><br><br><br>
 			<div id = "textboxWrapper">
-				<textarea rows = "26" cols = "15" id = "console"></textarea>
+				<textarea rows = "25" cols = "15" id = "console"></textarea>
 			</div>
 		</div>
 	</div>
