@@ -1,7 +1,7 @@
 //define some global variables
 var title = "My Cool Graph";
-var xLabel = "Picoseconds";
-var yLabel = "Cheeseburgers Eaten";
+var xLabel = "X Axis Label";
+var yLabel = "Y Axis Label";
 var canvasWidth = 500;
 var canvasHeight = 500;
 var axesOffset = 50;
@@ -27,23 +27,8 @@ var coords = new Array();
 var c = document.getElementById("myCanvas");
 var canvOK = 1;
 
-//main
-//add some test points
-// addPoint(300, 175);
-// addPoint(400, 400);
-// addPoint(100, 25);
-// addPoint(209, 75);
-// addPoint(0, 0);
-// addPoint(200, 100);
-// addPoint(50, 150);
-// addPoint(123, 69);
-// addPoint(340, 222);
-addPoint(1, 9);
-addPoint(3, 2);
-addPoint(5, 6);
-addPoint(6, 1);
-addPoint(9, 4);
-addPoint(12, 8);
+//load a scenario
+loadScenario();
 
 //draw the canvas
 paintCanvas();
@@ -80,6 +65,39 @@ function paintCanvas() {
 	}
 }
 
+//load a random scenario from a predefined group
+function loadScenario() {
+	//load a set of points and define axes
+	var scenario = parseInt(Math.random()*2);
+	switch (scenario) {
+		case 0:
+		 	xMax = 15;
+	 		yMax = 15;
+	 		numAxisMarkers = 15
+			addPoint(1, 9);
+			addPoint(3, 2);
+			addPoint(5, 6);
+			addPoint(6, 1);
+			addPoint(9, 4);
+			addPoint(12, 8);
+			break;
+		case 1:
+			xMax = 400;
+			yMax = 400;
+			numAxisMarkers = 8;
+			addPoint(300, 175);
+			addPoint(375, 250);
+			addPoint(100, 25);
+			addPoint(209, 75);
+			addPoint(0, 0);
+			addPoint(200, 100);
+			addPoint(50, 150);
+			addPoint(123, 69);
+			addPoint(340, 222);
+			break;
+	}
+}
+
 //comparator for sorting coordinates
 function compare(a, b) {
 	return a[0] - b[0];
@@ -89,6 +107,7 @@ function compare(a, b) {
 function drawAxes() {
 	//draw axes
 	var ctx = c.getContext("2d");
+	ctx.lineWidth = 1;
 	ctx.beginPath();
 	ctx.moveTo(axesOffset, axesOffset);
 	ctx.lineTo(axesOffset, canvasHeight - axesOffset);
@@ -174,6 +193,7 @@ function drawLabels() {
 	
 	//the canvas must be rotated to draw vertical text
 	ctx.save();			//save canvas position so it can be restored
+	ctx.font = "14px Courier";
 	ctx.translate(15, canvasHeight / 2); //move canvas in position
 	ctx.rotate(Math.PI * 1.5); //rotate canvas
 	ctx.fillText(yLabel, 0, 0);
@@ -186,6 +206,7 @@ function drawLinearFunc(slope, y0) {
 	var xRatio = graphWidth / xMax;
 	var yRatio = graphHeight / yMax;
 	var ctx = c.getContext("2d");
+	ctx.lineWidth = 2;
 	ctx.strokeStyle = document.getElementById("linearColor").value;
 	ctx.beginPath();
 	
@@ -238,6 +259,7 @@ function drawPolynomial(X) {
 	var fX = 0;
 	var ctx = c.getContext("2d");
 	var strokeOn = true;
+	ctx.lineWidth = 1;
 	ctx.strokeStyle = document.getElementById("polynomialColor").value;
 	ctx.beginPath(axesOffset, canvasHeight - axesOffset - (X[n-1] * yRatio));
 	for (var i = 0; i <= precision; i++) {
