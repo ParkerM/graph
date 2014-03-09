@@ -285,15 +285,12 @@ function drawPolynomial(X) {
 	ctx.stroke();
 
 	//print function to textarea
-	if (polynomialOrder < coords.length){
-		msg += "f(x) = ";
-		for (var i = 0; i < polynomialOrder - 1; i++) {
-			msg += X[i].toPrecision(6) + "x^" + (X.length - i - 1) + " + ";
-		}
-		msg += X[X.length - 2].toPrecision(6) + "x + " + X[X.length - 1].toPrecision(6) + "\n\n";
-	} else {
-		msg += "Error: n must be less than # points\n\n";
+	msg += "f(x) = ";
+	for (var i = 0; i < polynomialOrder - 1; i++) {
+		msg += X[i].toPrecision(6) + "x^" + (X.length - i - 1) + " + ";
 	}
+	msg += X[X.length - 2].toPrecision(6) + "x + " + X[X.length - 1].toPrecision(6) + "\n\n";
+	
 	printMSG(msg);
 }
 
@@ -354,101 +351,100 @@ function linearRegression() {
 
 //perform a polynomial regression on the current points
 function polynomialRegression() {
-	//we will solve the linear system [A]t [A] [X] = [A]t [B]
-	if (!polynomialClicked) {
+	//solve the linear system [A]t [A] [X] = [A]t [B]
 	polynomialOrder = parseInt(document.getElementById("polyOrder").value);
-	var precision = polynomialOrder + 1;
-	var n = coords.length;
-	var A = new Array(n);  //2D
-	var B = new Array(n);  //1D
-	var AtA = new Array(precision); //A transpose A 3x3
-	var AtAi = new Array(precision); //inverse of A transpose A
-	var AtB = new Array(precision); //A transpose B
+	if (!polynomialClicked && polynomialOrder < coords.length) {
+		var precision = polynomialOrder + 1;
+		var n = coords.length;
+		var A = new Array(n);  //2D
+		var B = new Array(n);  //1D
+		var AtA = new Array(precision); //A transpose A
+		var AtB = new Array(precision); //A transpose B
 
-	//initialize A
-	for (var i = 0; i < n; i++) {
-		A[i] = new Array(precision);
-	}
-
-	//create A
-	for (var i = 0; i < n; i++) {
-		for (var j = 0; j < precision; j++) {
-			A[i][j] = Math.pow(coords[i][0], precision - j - 1);
-		}
-	}
-
-	//create B
-	for (var i = 0; i < n; i++) {
-		B[i] = coords[i][1];
-	}
-
-	//initialize and zero AtA
-	for (var i = 0; i < precision; i++) {
-		AtA[i] = new Array(precision);
-		for (var j = 0; j < precision; j++) {
-			AtA[i][j] = 0;
-		}
-	}
-
-	//create A transpose A
-	for (var i = 0; i < precision; i++) {
-		for (var j = 0; j < precision; j++) {
-			for (var k = 0; k < n; k++) {
-				AtA[i][j] += A[k][i] * A[k][j];
+		//initialize and create A
+		for (var i = 0; i < n; i++) {
+			A[i] = new Array(precision);
+			for (var j = 0; j < precision; j++) {
+				A[i][j] = Math.pow(coords[i][0], precision - j - 1);
 			}
 		}
-	}
 
-	//initialize and zero AtB
-	for(var i = 0; i < n; i++) {
-		AtB[i] = 0;
-	}
-
-	//create AtB
-	for (var i = 0; i < precision; i++) {
-		for (var j = 0; j < n; j++) {
-			AtB[i] += A[j][i] * B[j];
+		//create B
+		for (var i = 0; i < n; i++) {
+			B[i] = coords[i][1];
 		}
-	}
 
-	//gaussian elimination. adapted from rosettacode.org
-	var max, temp, i, j, col;		
-	n = AtA.length; //reassign n to length of AtA
-	var X = new Array(n);
-	for (col = 0; col < n; col++) {
-		j = col;
-		max = AtA[j][j];
-		for (i = col + 1; i < n; i++) {
-			temp = Math.abs(AtA[i][col]);
-			if (temp > max){
-				j = i; 
-				max = temp;
+		//initialize and zero AtA
+		for (var i = 0; i < precision; i++) {
+			AtA[i] = new Array(precision);
+			for (var j = 0; j < precision; j++) {
+				AtA[i][j] = 0;
 			}
 		}
-		AtA = swapRow2D(AtA, col, j);
-		AtB = swapRow1D(AtB, col, j);
-		for (i = col + 1; i < n; i++) {
-			temp = AtA[i][col] / AtA[col][col];
-			for (j = col + 1; j < n; j++) {
-				AtA[i][j] -= temp * AtA[col][j];
+
+		//create A transpose A
+		for (var i = 0; i < precision; i++) {
+			for (var j = 0; j < precision; j++) {
+				for (var k = 0; k < n; k++) {
+					AtA[i][j] += A[k][i] * A[k][j];
+				}
 			}
-			AtA[i][col] = 0;
-			AtB[i] -= temp * AtB[col];
 		}
-	}
-	for (col = n - 1; col >= 0; col--) {
-		temp = AtB[col];
-		for (j = n - 1; j > col; j--) {
-			temp -= X[j] * AtA[col][j];
+
+		//initialize and zero AtB
+		for(var i = 0; i < n; i++) {
+			AtB[i] = 0;
 		}
-		X[col] = temp / AtA[col][col];
-	}
 
-	drawPolynomial(X);
+		//create AtB
+		for (var i = 0; i < precision; i++) {
+			for (var j = 0; j < n; j++) {
+				AtB[i] += A[j][i] * B[j];
+			}
+		}
 
-	polynomialClicked = true;
+		//gaussian elimination. adapted from rosettacode.org
+		var max, temp, i, j, col;		
+		n = AtA.length; //reassign n to length of AtA
+		var X = new Array(n);
+		for (col = 0; col < n; col++) {
+			j = col;
+			max = AtA[j][j];
+			for (i = col + 1; i < n; i++) {
+				temp = Math.abs(AtA[i][col]);
+				if (temp > max){
+					j = i; 
+					max = temp;
+				}
+			}
+			AtA = swapRow2D(AtA, col, j);
+			AtB = swapRow1D(AtB, col, j);
+			for (i = col + 1; i < n; i++) {
+				temp = AtA[i][col] / AtA[col][col];
+				for (j = col + 1; j < n; j++) {
+					AtA[i][j] -= temp * AtA[col][j];
+				}
+				AtA[i][col] = 0;
+				AtB[i] -= temp * AtB[col];
+			}
+		}
+		for (col = n - 1; col >= 0; col--) {
+			temp = AtB[col];
+			for (j = n - 1; j > col; j--) {
+				temp -= X[j] * AtA[col][j];
+			}
+			X[col] = temp / AtA[col][col];
+		}
+
+		drawPolynomial(X);
+
+		polynomialClicked = true;
 	} else {
 		paintCanvas();
+		//use different string for error so msg can be restored
+		var tempMsg = msg;
+		tempMsg += "Error: n must be less than # points\n\n";
+		printMSG(tempMsg);
 	}
 
 }
