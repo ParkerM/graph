@@ -442,9 +442,11 @@ function polynomialRegression() {
 	} else {
 		paintCanvas();
 		//use different string for error so msg can be restored
-		var tempMsg = msg;
-		tempMsg += "Error: n must be less than # points\n\n";
-		printMSG(tempMsg);
+		if (polynomialOrder >= coords.length) {
+			var tempMsg = msg;
+			tempMsg += "Error: n must be less than # points\n\n";
+			printMSG(tempMsg);
+		}
 	}
 
 }
