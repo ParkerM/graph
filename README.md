@@ -7,7 +7,7 @@ A tool for plotting points using Javascript and the HTML5 Canvas element.
 * Customize the length of the axes and the number of markers on the axes.
 * Graph title and axis labels.
 * Choose to display grid, coordinates, points, and/or connecting lines.
-* Find linear or polynomial functions of best fit.
+* Find and graph linear or polynomial functions of best fit.
 * Export to PNG image.
 
 #Limitations:
