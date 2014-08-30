@@ -2,6 +2,7 @@ graph
 =====
 
 A tool for plotting points using Javascript and the HTML5 Canvas element.
+
 Created for http://plotpoints.net
 
 #Features:
