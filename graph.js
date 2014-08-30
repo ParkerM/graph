@@ -169,7 +169,6 @@ function drawAxes() {
 function drawBorder() {
 	if (showBorder) {
 		//simply draw a line around the edge of the canvas
-		//may change to rect if needed
 		var ctx = c.getContext("2d");
 		ctx.strokeStyle = "#000000";
 		ctx.beginPath();

@@ -12,5 +12,8 @@ A tool for plotting points using Javascript and the HTML5 Canvas element.
 
 #Limitations:
 * Image size currently restricted to 500x500 pixels.
-* Lower bound of axes is restricted to 0.
+* Lower bound of axes restricted to 0.
 * Full functionality only available in Google Chrome.
+
+#To Do:
+* Fix it.
