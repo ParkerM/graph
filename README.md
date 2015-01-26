@@ -16,6 +16,3 @@ Created for http://plotpoints.net
 * Image size currently restricted to 500x500 pixels.
 * Lower bound of axes restricted to 0.
 * Full functionality only available in Google Chrome.
-
-#To Do:
-* Fix it.
