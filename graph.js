@@ -1,4 +1,9 @@
-//define some global variables
+/*
+ * graph.js
+ * A tool for plotting points using Javascript and the HTML5 Canvas element.
+ * Created by John Mauney for http://plotpoints.net
+*/
+
 var title = "My Cool Graph";
 var xLabel = "X Axis Label";
 var yLabel = "Y Axis Label";
@@ -21,14 +26,22 @@ var showGrid = true;
 var showLines = true;
 var showPoints = true;
 var linearClicked = false;
+var linearColor = document.getElementById("linearColor").value;
+var polyColor = document.getElementById("polynomialColor").value;
 var polynomialClicked = false;
 var polynomialOrder = 3;
 var coords = new Array();
 var c = document.getElementById("myCanvas");
 var canvOK = 1;
+var fromURL = false;
 
-//load a scenario
-loadScenario();
+//check if a graph is in the url and assign its values if so
+parseLink();
+
+//load a random example scenario if no url data
+if (!fromURL) {
+	loadScenario();
+}
 
 //draw the canvas
 paintCanvas();
@@ -96,6 +109,16 @@ function loadScenario() {
 			addPoint(340, 222);
 			break;
 	}
+
+	//randomly generated version, may work on this later
+	// xMax = parseInt(Math.random()*9 + 1)*100;
+	// yMax = parseInt(Math.random()*9 + 1)*100;
+	// numAxisMarkers = 10;
+
+	// var pointQuantity = 3 + parseInt(Math.random()*9);
+	// for(var i = 0; i < pointQuantity; i++) {
+	// 	addPoint(parseInt(Math.random()*1000) % xMax, parseInt(Math.random()*1000) % yMax);
+	// }
 }
 
 //comparator for sorting coordinates
@@ -112,7 +135,7 @@ function drawAxes() {
 	ctx.moveTo(axesOffset, axesOffset);
 	ctx.lineTo(axesOffset, canvasHeight - axesOffset);
 	ctx.lineTo(canvasWidth - axesOffset, canvasHeight - axesOffset);
-	ctx.strokeStyle = "000000";
+	ctx.strokeStyle = "#000000";
 	ctx.stroke();
 	
 	//draw interval markers
@@ -120,7 +143,7 @@ function drawAxes() {
 	xInterval = xMax / numAxisMarkers;
 	yInterval = yMax / numAxisMarkers;
 	ctx.font = "12px Courier";
-	ctx.fillStyle = "000000";
+	ctx.fillStyle = "#000000";
 	
 	//x axis interval markers
 	for (var i = 1; i < numAxisMarkers + 1; i++) {
@@ -185,7 +208,7 @@ function drawBorder() {
 function drawLabels() {
 	var ctx = c.getContext("2d");
 	ctx.font = "12px Courier";
-	ctx.fillStyle = "000000";
+	ctx.fillStyle = "#000000";
 	ctx.textAlign = "center";
 	ctx.fillText(title, canvasWidth / 2, 25); //title
 	ctx.fillText(xLabel, canvasWidth / 2, canvasHeight - 15); //x-axis label
@@ -206,7 +229,11 @@ function drawLinearFunc(slope, y0) {
 	var yRatio = graphHeight / yMax;
 	var ctx = c.getContext("2d");
 	ctx.lineWidth = 2;
-	ctx.strokeStyle = document.getElementById("linearColor").value;
+	if (fromURL) {
+		ctx.strokeStyle = linearColor;
+	} else {
+		ctx.strokeStyle = document.getElementById("linearColor").value;
+	}
 	ctx.beginPath();
 	
 	//calculate beginning point
@@ -259,7 +286,11 @@ function drawPolynomial(X) {
 	var ctx = c.getContext("2d");
 	var strokeOn = true;
 	ctx.lineWidth = 1;
-	ctx.strokeStyle = document.getElementById("polynomialColor").value;
+	if (fromURL) {
+		ctx.strokeStyle = polyColor;
+	} else {
+		ctx.strokeStyle = document.getElementById("polynomialColor").value;
+	}
 	ctx.beginPath(axesOffset, canvasHeight - axesOffset - (X[n-1] * yRatio));
 	for (var i = 0; i <= precision; i++) {
 		xVar = (i * (graphWidth / precision) / (xRatio));
@@ -447,7 +478,6 @@ function polynomialRegression() {
 			printMSG(tempMsg);
 		}
 	}
-
 }
 
 //swap rows of a 1D array
@@ -467,6 +497,65 @@ function swapRow2D(A, row1, row2) {
 		A[row2][i] = tempArray[i];
 	}
 	return A;
+}
+
+//create a permalink to the current graph
+function createLink() {
+	var newURL = location.href + "?title=" + title + "&xLabel=" + xLabel + "&yLabel=" + yLabel + "&xMax=" + xMax + "&yMax=" + yMax + "&numMarks=" + numAxisMarkers + "&showPoly=" + polynomialClicked + "&polyOrder=" + polynomialOrder + "&polyColor=" + document.getElementById("polynomialColor").value + "&showLinear=" + document.getElementById("linearColor").value + "&linColor=" + linearColor + "&coords=";
+	for (var i = 0; i < coords.length - 1; i++) {
+		newURL += coords[i][0] + "," + coords[i][1] + "|";
+	}
+	newURL += coords[coords.length - 1][0] + "," + coords[coords.length - 1][1];
+	prompt("Permalink to this graph:", newURL);
+}
+
+//parse permalink info
+function parseLink() {
+	//first check for ? in URL
+	var currentURL = location.href;
+	var delimIndex = currentURL.indexOf("?");
+	if (delimIndex != -1) {
+		fromURL = true;
+	}
+
+	if (fromURL) {
+		//get everything after ?
+		var urlString = currentURL.slice(delimIndex + 1);
+
+		//split items into an array
+		var urlItems = urlString.split("&");
+
+		title = decodeURI(urlItems[0].slice(urlItems[0].indexOf("=") + 1));
+		xLabel = decodeURI(urlItems[1].slice(urlItems[1].indexOf("=") + 1));
+		yLabel = decodeURI(urlItems[2].slice(urlItems[2].indexOf("=") + 1));
+		xMax = parseInt(urlItems[3].slice(urlItems[3].indexOf("=") + 1));
+		yMax = parseInt(urlItems[4].slice(urlItems[4].indexOf("=") + 1));
+		numAxisMarkers = parseInt(urlItems[5].slice(urlItems[5].indexOf("=") + 1));
+		polynomialClicked = (urlItems[6].slice(urlItems[6].indexOf("=") + 1) === "true");
+		polynomialOrder = parseInt(urlItems[7].slice(urlItems[7].indexOf("=") + 1));
+		polyColor = urlItems[8].slice(urlItems[8].indexOf("=") + 1);
+		linearClicked = (urlItems[9].slice(urlItems[9].indexOf("=") + 1) === "true");
+		linearColor = urlItems[10].slice(urlItems[10].indexOf("=") + 1);
+		var coordString = urlItems[11].slice(urlItems[11].indexOf("=") + 1);
+
+		//split coordinate string to individual coordinates
+		var exitLoop = false;
+		var tempX = 0;
+		var tempY = 0;
+		while (!exitLoop) {
+			tempX = parseInt(coordString.slice(0, coordString.indexOf(",")));
+			coordString = coordString.slice(coordString.indexOf(",") + 1);
+			if (coordString.indexOf("|") == -1) {
+				tempY = parseInt(coordString);
+				exitLoop = true;
+			} else {
+				tempY = parseInt(coordString.slice(0, coordString.indexOf("|")));
+				coordString = coordString.slice(coordString.indexOf("|") + 1);
+			}
+			coords.push([tempX, tempY]);
+		}
+		paintCanvas();
+	}
 }
 
 //export the canvas to a png image
@@ -491,7 +580,7 @@ function addPointFromInput() {
 //redraw all points
 function replot() {
 	var ctx = c.getContext("2d");
-	ctx.fillStyle = "000000";
+	ctx.fillStyle = "#000000";
 	ctx.font = "12px Courier";
 	ctx.textAlign = "left";
 	
